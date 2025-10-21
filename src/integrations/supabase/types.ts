@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      products: {
+        Row: {
+          color: string
+          cost_price: number
+          created_at: string | null
+          id: string
+          image: string | null
+          name: string
+        }
+        Insert: {
+          color: string
+          cost_price: number
+          created_at?: string | null
+          id?: string
+          image?: string | null
+          name: string
+        }
+        Update: {
+          color?: string
+          cost_price?: number
+          created_at?: string | null
+          id?: string
+          image?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          address: string | null
+          contact: string | null
+          created_at: string | null
+          customer: string
+          date: string
+          due_date: string | null
+          id: string
+          method: string
+          notes: string | null
+          paid: number
+          payment_type: string
+          product_id: string
+          profit: number
+          quantity: number
+          remaining: number
+          sale_price: number
+          status: string
+          total: number
+        }
+        Insert: {
+          address?: string | null
+          contact?: string | null
+          created_at?: string | null
+          customer: string
+          date: string
+          due_date?: string | null
+          id?: string
+          method: string
+          notes?: string | null
+          paid: number
+          payment_type: string
+          product_id: string
+          profit: number
+          quantity: number
+          remaining: number
+          sale_price: number
+          status: string
+          total: number
+        }
+        Update: {
+          address?: string | null
+          contact?: string | null
+          created_at?: string | null
+          customer?: string
+          date?: string
+          due_date?: string | null
+          id?: string
+          method?: string
+          notes?: string | null
+          paid?: number
+          payment_type?: string
+          product_id?: string
+          profit?: number
+          quantity?: number
+          remaining?: number
+          sale_price?: number
+          status?: string
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

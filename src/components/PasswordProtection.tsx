@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
-const CORRECT_PASSWORD = "Pass1122wordzx";
 const PASSWORD_KEY = "site_password_verified";
 
 interface PasswordProtectionProps {
@@ -26,15 +26,27 @@ export const PasswordProtection = ({ children }: PasswordProtectionProps) => {
     setIsLoading(false);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (password === CORRECT_PASSWORD) {
-      sessionStorage.setItem(PASSWORD_KEY, "true");
-      setIsUnlocked(true);
-      toast.success("Access granted!");
-    } else {
-      toast.error("Incorrect password");
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-password', {
+        body: { password }
+      });
+
+      if (error) throw error;
+
+      if (data?.valid) {
+        sessionStorage.setItem(PASSWORD_KEY, "true");
+        setIsUnlocked(true);
+        toast.success("Access granted!");
+      } else {
+        toast.error("Incorrect password");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error("Error verifying password:", error);
+      toast.error("Error verifying password");
       setPassword("");
     }
   };

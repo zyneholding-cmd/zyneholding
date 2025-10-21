@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useDatabase } from "@/hooks/useDatabase";
 import { TopBar } from "@/components/TopBar";
 import { Sidebar } from "@/components/Sidebar";
 import { ProductChart } from "@/components/ProductChart";
@@ -17,7 +17,7 @@ import { Sale } from "@/types/sales";
 import { toast } from "sonner";
 
 const Index = () => {
-  const { data, addProduct, deleteProduct, addSale, updateSale, deleteSale } = useLocalStorage();
+  const { data, isLoading, addProduct, updateProduct, deleteProduct, addSale, updateSale, deleteSale } = useDatabase();
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showAddSale, setShowAddSale] = useState(false);
@@ -44,42 +44,65 @@ const Index = () => {
     0
   );
 
-  const handleAddProduct = (productData: any) => {
-    const newProduct = addProduct(productData);
-    setSelectedProductId(newProduct.id);
-    toast.success("Product added successfully!");
+  const handleAddProduct = async (productData: any) => {
+    try {
+      const newProduct = await addProduct(productData);
+      setSelectedProductId(newProduct.id);
+    } catch (error) {
+      // Error already handled by useDatabase hook
+    }
   };
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(id);
-      if (selectedProductId === id) {
-        setSelectedProductId(null);
+      try {
+        await deleteProduct(id);
+        if (selectedProductId === id) {
+          setSelectedProductId(null);
+        }
+      } catch (error) {
+        // Error already handled by useDatabase hook
       }
-      toast.success("Product deleted");
     }
   };
 
-  const handleAddSale = (saleData: any) => {
+  const handleAddSale = async (saleData: any) => {
     if (selectedProduct) {
-      addSale(selectedProduct.id, saleData);
-      toast.success("Sale added successfully!");
+      try {
+        await addSale(selectedProduct.id, saleData);
+      } catch (error) {
+        // Error already handled by useDatabase hook
+      }
     }
   };
 
-  const handleUpdateSale = (updates: Partial<Sale>) => {
+  const handleUpdateSale = async (updates: Partial<Sale>) => {
     if (editingSale && selectedProduct) {
-      updateSale(selectedProduct.id, editingSale.id, updates);
-      toast.success("Sale updated successfully!");
+      try {
+        await updateSale(selectedProduct.id, editingSale.id, updates);
+      } catch (error) {
+        // Error already handled by useDatabase hook
+      }
     }
   };
 
-  const handleDeleteSale = (saleId: string) => {
+  const handleDeleteSale = async (saleId: string) => {
     if (selectedProduct && confirm("Are you sure you want to delete this sale?")) {
-      deleteSale(selectedProduct.id, saleId);
-      toast.success("Sale deleted");
+      try {
+        await deleteSale(selectedProduct.id, saleId);
+      } catch (error) {
+        // Error already handled by useDatabase hook
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-background">

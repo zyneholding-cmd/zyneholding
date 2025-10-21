@@ -1,16 +1,24 @@
-import { Sale } from "@/types/sales";
+import { Sale, Product } from "@/types/sales";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, User } from "lucide-react";
+import { Edit, Trash2, User, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { exportSalesToPDF } from "@/utils/pdfExport";
 
 interface SalesHistoryProps {
   sales: Sale[];
   onEditSale: (sale: Sale) => void;
   onDeleteSale: (saleId: string) => void;
   onViewCustomer: (sale: Sale) => void;
+  product?: Product;
 }
 
-export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer }: SalesHistoryProps) => {
+export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, product }: SalesHistoryProps) => {
+  const handleExportPDF = () => {
+    if (product) {
+      exportSalesToPDF(product);
+    }
+  };
+
   const getStatusColor = (status: Sale["status"]) => {
     switch (status) {
       case "Paid":
@@ -24,6 +32,14 @@ export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer }
 
   return (
     <div className="space-y-3">
+      {product && sales.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <Button onClick={handleExportPDF} variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Export PDF
+          </Button>
+        </div>
+      )}
       {sales.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           No sales recorded yet. Add your first sale to get started.

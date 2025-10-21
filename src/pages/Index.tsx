@@ -10,6 +10,7 @@ import { CustomerDetailModal } from "@/components/CustomerDetailModal";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
 import { Reminders } from "@/components/Reminders";
 import { ProductStatsCharts } from "@/components/ProductStatsCharts";
+import { ChatAssistant } from "@/components/ChatAssistant";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -250,6 +251,7 @@ const Index = () => {
                 <TabsContent value="sales" className="mt-4 md:mt-6">
                   <SalesHistory
                     sales={selectedProduct.sales}
+                    product={selectedProduct}
                     onEditSale={(sale) => {
                       setEditingSale(sale);
                       setShowCustomerDetail(true);
@@ -304,6 +306,8 @@ const Index = () => {
         sale={editingSale}
         onUpdate={handleUpdateSale}
       />
+
+      <ChatAssistant />
     </div>
   );
 };

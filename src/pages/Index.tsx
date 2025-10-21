@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { Session, User } from "@supabase/supabase-js";
 import { TopBar } from "@/components/TopBar";
 import { Sidebar } from "@/components/Sidebar";
 import { ProductChart } from "@/components/ProductChart";
@@ -17,7 +20,41 @@ import { Sale } from "@/types/sales";
 import { toast } from "sonner";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { data, addProduct, deleteProduct, addSale, updateSale, deleteSale } = useLocalStorage();
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
+    navigate("/auth");
+  };
+
+  if (!session) {
+    return null; // Will redirect in useEffect
+  }
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showAddSale, setShowAddSale] = useState(false);
@@ -90,6 +127,8 @@ const Index = () => {
         totalProfit={totalProfit}
         totalReceived={totalReceived}
         totalRemaining={totalRemaining}
+        onLogout={handleLogout}
+        userEmail={user?.email}
       />
 
       <div className="flex-1 flex overflow-hidden">

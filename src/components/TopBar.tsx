@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Package, BarChart3 } from "lucide-react";
+import { Package, BarChart3, LogOut } from "lucide-react";
 
 interface TopBarProps {
   onAddProduct: () => void;
@@ -8,6 +8,8 @@ interface TopBarProps {
   totalProfit: number;
   totalReceived: number;
   totalRemaining: number;
+  onLogout?: () => void;
+  userEmail?: string;
 }
 
 export const TopBar = ({
@@ -17,6 +19,8 @@ export const TopBar = ({
   totalProfit,
   totalReceived,
   totalRemaining,
+  onLogout,
+  userEmail,
 }: TopBarProps) => {
   return (
     <div className="h-16 border-b bg-card px-6 flex items-center justify-between card-shadow">
@@ -54,6 +58,12 @@ export const TopBar = ({
             <Package className="h-4 w-4 mr-2" />
             Add Product
           </Button>
+          {onLogout && (
+            <Button onClick={onLogout} variant="outline" size="sm">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -114,7 +114,7 @@ export const ProductChart = ({ product }: ProductChartProps) => {
   };
 
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-[300px] md:h-[400px] w-full">
       <Line data={data} options={options} />
     </div>
   );

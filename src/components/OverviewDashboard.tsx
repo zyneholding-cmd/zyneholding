@@ -1,6 +1,7 @@
 import { Product } from "@/types/sales";
 import { Line, Doughnut } from "react-chartjs-2";
 import { Card } from "@/components/ui/card";
+import { ProductsComparisonChart } from "@/components/ProductsComparisonChart";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -86,34 +87,34 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <h2 className="text-2xl font-bold">Global Overview</h2>
+    <div className="space-y-4 md:space-y-6 p-4 md:p-6">
+      <h2 className="text-xl md:text-2xl font-bold">Global Overview</h2>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6 text-center">
-          <p className="text-sm text-muted-foreground mb-2">Total Sales</p>
-          <p className="text-3xl font-bold">PKR {totalSales.toLocaleString()}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <Card className="p-3 md:p-6 text-center">
+          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Sales</p>
+          <p className="text-lg md:text-3xl font-bold">PKR {totalSales.toLocaleString()}</p>
         </Card>
-        <Card className="p-6 text-center bg-success/5">
-          <p className="text-sm text-muted-foreground mb-2">Total Profit</p>
-          <p className="text-3xl font-bold text-success">PKR {totalProfit.toLocaleString()}</p>
+        <Card className="p-3 md:p-6 text-center bg-success/5">
+          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Profit</p>
+          <p className="text-lg md:text-3xl font-bold text-success">PKR {totalProfit.toLocaleString()}</p>
         </Card>
-        <Card className="p-6 text-center bg-primary/5">
-          <p className="text-sm text-muted-foreground mb-2">Total Received</p>
-          <p className="text-3xl font-bold text-primary">PKR {totalReceived.toLocaleString()}</p>
+        <Card className="p-3 md:p-6 text-center bg-primary/5">
+          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Received</p>
+          <p className="text-lg md:text-3xl font-bold text-primary">PKR {totalReceived.toLocaleString()}</p>
         </Card>
-        <Card className="p-6 text-center bg-warning/5">
-          <p className="text-sm text-muted-foreground mb-2">Total Remaining</p>
-          <p className="text-3xl font-bold text-warning">PKR {totalRemaining.toLocaleString()}</p>
+        <Card className="p-3 md:p-6 text-center bg-warning/5">
+          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Remaining</p>
+          <p className="text-lg md:text-3xl font-bold text-warning">PKR {totalRemaining.toLocaleString()}</p>
         </Card>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4">Payment Methods Distribution</h3>
-          <div className="h-[300px] flex items-center justify-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <Card className="p-4 md:p-6">
+          <h3 className="text-sm md:text-base font-semibold mb-3 md:mb-4">Payment Methods Distribution</h3>
+          <div className="h-[250px] md:h-[300px] flex items-center justify-center">
             <Doughnut
               data={doughnutData}
               options={{
@@ -129,9 +130,9 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4">Received vs Remaining Over Time</h3>
-          <div className="h-[300px]">
+        <Card className="p-4 md:p-6">
+          <h3 className="text-sm md:text-base font-semibold mb-3 md:mb-4">Received vs Remaining Over Time</h3>
+          <div className="h-[250px] md:h-[300px]">
             <Line
               data={lineData}
               options={{
@@ -155,6 +156,9 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
           </div>
         </Card>
       </div>
+
+      {/* Products Comparison */}
+      {products.length > 0 && <ProductsComparisonChart products={products} />}
     </div>
   );
 };

@@ -19,14 +19,14 @@ export const TopBar = ({
   totalRemaining,
 }: TopBarProps) => {
   return (
-    <div className="h-16 border-b bg-card px-6 flex items-center justify-between card-shadow">
-      <div className="flex items-center gap-3">
-        <BarChart3 className="h-6 w-6 text-primary" />
-        <h1 className="text-xl font-semibold">Sales & Customer Dashboard</h1>
+    <div className="h-14 md:h-16 border-b bg-card px-3 md:px-6 flex items-center justify-between card-shadow">
+      <div className="flex items-center gap-2 md:gap-3">
+        <BarChart3 className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+        <h1 className="text-sm md:text-xl font-semibold truncate">Sales Dashboard</h1>
       </div>
       
-      <div className="flex items-center gap-6">
-        <div className="hidden md:flex items-center gap-6 text-sm">
+      <div className="flex items-center gap-2 md:gap-6">
+        <div className="hidden lg:flex items-center gap-6 text-sm">
           <div className="text-center">
             <p className="text-muted-foreground text-xs">Total Sales</p>
             <p className="font-semibold text-foreground">PKR {totalSales.toLocaleString()}</p>
@@ -45,14 +45,14 @@ export const TopBar = ({
           </div>
         </div>
         
-        <div className="flex gap-2">
-          <Button onClick={onShowOverview} variant="outline" size="sm">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Overview
+        <div className="flex gap-1 md:gap-2">
+          <Button onClick={onShowOverview} variant="outline" size="sm" className="text-xs md:text-sm">
+            <BarChart3 className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
+            <span className="hidden md:inline">Overview</span>
           </Button>
-          <Button onClick={onAddProduct} size="sm">
-            <Package className="h-4 w-4 mr-2" />
-            Add Product
+          <Button onClick={onAddProduct} size="sm" className="text-xs md:text-sm">
+            <Package className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
+            <span className="hidden sm:inline">Add Product</span>
           </Button>
         </div>
       </div>

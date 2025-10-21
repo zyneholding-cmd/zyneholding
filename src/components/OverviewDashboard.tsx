@@ -1,6 +1,30 @@
 import { Product } from "@/types/sales";
 import { Line, Doughnut } from "react-chartjs-2";
 import { Card } from "@/components/ui/card";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface OverviewDashboardProps {
   products: Product[];

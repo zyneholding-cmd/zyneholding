@@ -11,6 +11,7 @@ import { OverviewDashboard } from "@/components/OverviewDashboard";
 import { Reminders } from "@/components/Reminders";
 import { ProductStatsCharts } from "@/components/ProductStatsCharts";
 import { ChatAssistant } from "@/components/ChatAssistant";
+import { StatCard } from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -109,7 +110,7 @@ const Index = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <TopBar
         onAddProduct={() => setShowAddProduct(true)}
         onShowOverview={() => setShowOverview(!showOverview)}
@@ -158,11 +159,11 @@ const Index = () => {
           />
         </div>
 
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto bg-background">
           {showOverview ? (
             <OverviewDashboard products={data.products} />
           ) : selectedProduct ? (
-            <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-20 md:pb-6">
+            <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-24 md:pb-6">
               <Reminders products={data.products} />
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -185,39 +186,28 @@ const Index = () => {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <Card className="p-3 md:p-4 text-center">
-                  <p className="text-xs md:text-sm text-muted-foreground">Total Sales</p>
-                  <p className="text-lg md:text-2xl font-bold break-all">
-                    PKR{" "}
-                    {selectedProduct.sales
-                      .reduce((sum, s) => sum + s.total, 0)
-                      .toLocaleString()}
-                  </p>
-                </Card>
-                <Card className="p-3 md:p-4 text-center bg-success/5">
-                  <p className="text-xs md:text-sm text-muted-foreground">Total Profit</p>
-                  <p className="text-lg md:text-2xl font-bold text-success break-all">
-                    PKR{" "}
-                    {selectedProduct.sales
-                      .reduce((sum, s) => sum + s.profit, 0)
-                      .toLocaleString()}
-                  </p>
-                </Card>
-                <Card className="p-3 md:p-4 text-center">
+                <StatCard 
+                  label="Total Sales" 
+                  value={selectedProduct.sales.reduce((sum, s) => sum + s.total, 0)}
+                />
+                <StatCard 
+                  label="Total Profit" 
+                  value={selectedProduct.sales.reduce((sum, s) => sum + s.profit, 0)}
+                  className="bg-success/5"
+                  textClassName="text-success"
+                />
+                <Card className="p-3 md:p-4 text-center animate-fade-in">
                   <p className="text-xs md:text-sm text-muted-foreground">Quantity Sold</p>
                   <p className="text-lg md:text-2xl font-bold">
                     {selectedProduct.sales.reduce((sum, s) => sum + s.quantity, 0)}
                   </p>
                 </Card>
-                <Card className="p-3 md:p-4 text-center bg-warning/5">
-                  <p className="text-xs md:text-sm text-muted-foreground">Pending Payments</p>
-                  <p className="text-lg md:text-2xl font-bold text-warning break-all">
-                    PKR{" "}
-                    {selectedProduct.sales
-                      .reduce((sum, s) => sum + s.remaining, 0)
-                      .toLocaleString()}
-                  </p>
-                </Card>
+                <StatCard 
+                  label="Pending Payments" 
+                  value={selectedProduct.sales.reduce((sum, s) => sum + s.remaining, 0)}
+                  className="bg-warning/5"
+                  textClassName="text-warning"
+                />
               </div>
 
               <Tabs defaultValue="chart" className="w-full">

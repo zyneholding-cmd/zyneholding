@@ -12,21 +12,54 @@ serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json();
+    const { message, action } = await req.json();
     
-    if (!message) {
-      throw new Error('Message is required');
+    if (!message && !action) {
+      throw new Error('Message or action is required');
+    }
+
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Handle update actions
+    if (action) {
+      if (action.type === 'update_sale') {
+        const { saleId, updates } = action;
+        const { error } = await supabase
+          .from('sales')
+          .update(updates)
+          .eq('id', saleId);
+
+        if (error) throw error;
+
+        return new Response(
+          JSON.stringify({ reply: 'Sale updated successfully!' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (action.type === 'update_product') {
+        const { productId, updates } = action;
+        const { error } = await supabase
+          .from('products')
+          .update(updates)
+          .eq('id', productId);
+
+        if (error) throw error;
+
+        return new Response(
+          JSON.stringify({ reply: 'Product updated successfully!' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
-
-    // Initialize Supabase client to fetch data
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch all products and sales data
     const { data: products, error: productsError } = await supabase
@@ -81,8 +114,10 @@ Your job is to:
 5. Always use the EXACT data provided above
 6. Format numbers with PKR currency
 7. Be concise and helpful
+8. You can help update sale information like payment status, amounts, or customer details
 
-When users ask about specific customers, products, or sales, reference the actual data provided.`;
+When users ask about specific customers, products, or sales, reference the actual data provided.
+If a user asks to update information, provide clear confirmation of what will be updated.`;
 
     // Call Lovable AI
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {

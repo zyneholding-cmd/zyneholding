@@ -1,45 +1,80 @@
 import { Product } from "@/types/sales";
-import { AlertTriangle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
+import { AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface RemindersProps {
   products: Product[];
 }
 
 export const Reminders = ({ products }: RemindersProps) => {
-  const overdueReminders: { customer: string; product: string; days: number; remaining: number }[] = [];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  products.forEach((product) => {
-    product.sales.forEach((sale) => {
-      if (sale.status !== "Paid") {
-        const daysSinceSale = Math.floor(
-          (Date.now() - new Date(sale.date).getTime()) / (1000 * 60 * 60 * 24)
-        );
-        if (daysSinceSale >= 3) {
-          overdueReminders.push({
-            customer: sale.customer,
-            product: product.name,
-            days: daysSinceSale,
-            remaining: sale.remaining,
-          });
-        }
-      }
-    });
-  });
+  const pendingPayments = products.flatMap((product) =>
+    product.sales
+      .filter((sale) => sale.remaining > 0)
+      .map((sale) => ({
+        customer: sale.customer,
+        amount: sale.remaining,
+        dueDate: sale.dueDate,
+        product: product.name,
+        status: sale.status,
+      }))
+  );
 
-  if (overdueReminders.length === 0) return null;
+  useEffect(() => {
+    if (pendingPayments.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % pendingPayments.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [pendingPayments.length]);
+
+  if (pendingPayments.length === 0) {
+    return null;
+  }
+
+  const currentPayment = pendingPayments[currentIndex];
 
   return (
-    <div className="space-y-2">
-      {overdueReminders.map((reminder, index) => (
-        <Alert key={index} variant="destructive" className="bg-warning/10 border-warning text-warning-foreground">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>{reminder.customer}</strong> has not paid for {reminder.product} ({reminder.days}+ days). 
-            Remaining: <strong>PKR {reminder.remaining.toLocaleString()}</strong>
-          </AlertDescription>
-        </Alert>
-      ))}
-    </div>
+    <Card className="p-4 bg-warning/10 border-warning/30 animate-fade-in">
+      <div className="flex items-start gap-3">
+        <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5 animate-pulse" />
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-warning mb-2 text-sm md:text-base">Payment Reminder</h3>
+          <div className="text-sm animate-fade-in" key={currentIndex}>
+            <p className="font-medium truncate">
+              {currentPayment.customer} - {currentPayment.product}
+            </p>
+            <p className="text-muted-foreground">
+              <span className="font-semibold text-warning">
+                PKR {currentPayment.amount.toLocaleString()}
+              </span>{" "}
+              payment {currentPayment.status === "Partial" ? "remaining" : "pending"}
+              {currentPayment.dueDate && (
+                <span className="block mt-1 text-xs">
+                  Due: {new Date(currentPayment.dueDate).toLocaleDateString()}
+                </span>
+              )}
+            </p>
+          </div>
+          {pendingPayments.length > 1 && (
+            <div className="flex gap-1 mt-3">
+              {pendingPayments.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    idx === currentIndex 
+                      ? "w-8 bg-warning" 
+                      : "w-1.5 bg-warning/30"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
   );
 };

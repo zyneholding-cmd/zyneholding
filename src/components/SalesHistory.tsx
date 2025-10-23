@@ -1,8 +1,15 @@
 import { Sale, Product } from "@/types/sales";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, User, Download } from "lucide-react";
+import { Edit, Trash2, User, Download, Filter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { exportSalesToPDF } from "@/utils/pdfExport";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SalesHistoryProps {
   sales: Sale[];
@@ -13,6 +20,7 @@ interface SalesHistoryProps {
 }
 
 export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, product }: SalesHistoryProps) => {
+  const [statusFilter, setStatusFilter] = useState<string[]>(["Paid", "Partial", "Pending"]);
   const handleExportPDF = () => {
     if (product) {
       exportSalesToPDF(product);
@@ -30,22 +38,68 @@ export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, 
     }
   };
 
+  const toggleStatus = (status: string) => {
+    setStatusFilter((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status]
+    );
+  };
+
+  const filteredSales = sales.filter((sale) => statusFilter.includes(sale.status));
+
   return (
     <div className="space-y-3">
       {product && sales.length > 0 && (
-        <div className="flex justify-end mb-4">
+        <div className="flex flex-wrap gap-2 justify-between mb-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Filter className="h-4 w-4" />
+                Filter Status
+                {statusFilter.length < 3 && (
+                  <Badge variant="secondary" className="ml-1">
+                    {statusFilter.length}
+                  </Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuCheckboxItem
+                checked={statusFilter.includes("Paid")}
+                onCheckedChange={() => toggleStatus("Paid")}
+              >
+                Paid
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={statusFilter.includes("Partial")}
+                onCheckedChange={() => toggleStatus("Partial")}
+              >
+                Partial
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={statusFilter.includes("Pending")}
+                onCheckedChange={() => toggleStatus("Pending")}
+              >
+                Pending
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
           <Button onClick={handleExportPDF} variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export PDF
           </Button>
         </div>
       )}
-      {sales.length === 0 ? (
+      {filteredSales.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
-          No sales recorded yet. Add your first sale to get started.
+          {sales.length === 0 
+            ? "No sales recorded yet. Add your first sale to get started."
+            : "No sales match the selected filter."}
         </div>
       ) : (
-        sales.map((sale) => (
+        filteredSales.map((sale) => (
           <div
             key={sale.id}
             className="bg-card rounded-lg p-4 border hover:shadow-md transition-shadow"

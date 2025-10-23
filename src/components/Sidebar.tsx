@@ -21,7 +21,7 @@ export const Sidebar = ({
   };
 
   return (
-    <div className="w-64 border-r bg-sidebar h-full flex flex-col">
+    <div className="w-full md:w-64 border-r bg-sidebar h-full flex flex-col">
       <div className="p-4 border-b">
         <h2 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
           Products
@@ -38,7 +38,7 @@ export const Sidebar = ({
             products.map((product) => (
               <div
                 key={product.id}
-                className={`relative group rounded-lg p-3 cursor-pointer transition-all ${
+                className={`relative group rounded-lg p-3 cursor-pointer transition-all animate-fade-in ${
                   selectedProductId === product.id
                     ? "bg-sidebar-accent"
                     : "hover:bg-sidebar-accent/50"

@@ -2,6 +2,8 @@ import { Product } from "@/types/sales";
 import { Line, Doughnut } from "react-chartjs-2";
 import { Card } from "@/components/ui/card";
 import { ProductsComparisonChart } from "@/components/ProductsComparisonChart";
+import { SalesTimelineChart } from "@/components/SalesTimelineChart";
+import { StatCard } from "@/components/StatCard";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -88,27 +90,33 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
 
   return (
     <div className="space-y-4 md:space-y-6 p-4 md:p-6">
-      <h2 className="text-xl md:text-2xl font-bold">Global Overview</h2>
+      <h2 className="text-xl md:text-2xl font-bold animate-fade-in">Global Overview</h2>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <Card className="p-3 md:p-6 text-center">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Sales</p>
-          <p className="text-lg md:text-3xl font-bold">PKR {totalSales.toLocaleString()}</p>
-        </Card>
-        <Card className="p-3 md:p-6 text-center bg-success/5">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Profit</p>
-          <p className="text-lg md:text-3xl font-bold text-success">PKR {totalProfit.toLocaleString()}</p>
-        </Card>
-        <Card className="p-3 md:p-6 text-center bg-primary/5">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Received</p>
-          <p className="text-lg md:text-3xl font-bold text-primary">PKR {totalReceived.toLocaleString()}</p>
-        </Card>
-        <Card className="p-3 md:p-6 text-center bg-warning/5">
-          <p className="text-xs md:text-sm text-muted-foreground mb-1 md:mb-2">Total Remaining</p>
-          <p className="text-lg md:text-3xl font-bold text-warning">PKR {totalRemaining.toLocaleString()}</p>
-        </Card>
+        <StatCard label="Total Sales" value={totalSales} />
+        <StatCard 
+          label="Total Profit" 
+          value={totalProfit} 
+          className="bg-success/5" 
+          textClassName="text-success"
+        />
+        <StatCard 
+          label="Total Received" 
+          value={totalReceived} 
+          className="bg-primary/5" 
+          textClassName="text-primary"
+        />
+        <StatCard 
+          label="Total Remaining" 
+          value={totalRemaining} 
+          className="bg-warning/5" 
+          textClassName="text-warning"
+        />
       </div>
+
+      {/* Sales Timeline Chart */}
+      <SalesTimelineChart products={products} />
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">

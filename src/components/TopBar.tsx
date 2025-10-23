@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Package, BarChart3 } from "lucide-react";
+import { Package, BarChart3, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 interface TopBarProps {
   onAddProduct: () => void;
@@ -18,6 +19,8 @@ export const TopBar = ({
   totalReceived,
   totalRemaining,
 }: TopBarProps) => {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="h-14 md:h-16 border-b bg-card px-3 md:px-6 flex items-center justify-between card-shadow">
       <div className="flex items-center gap-2 md:gap-3">
@@ -46,6 +49,18 @@ export const TopBar = ({
         </div>
         
         <div className="flex gap-1 md:gap-2">
+          <Button 
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
+            variant="outline" 
+            size="sm"
+            className="text-xs md:text-sm"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-3 w-3 md:h-4 md:w-4" />
+            ) : (
+              <Moon className="h-3 w-3 md:h-4 md:w-4" />
+            )}
+          </Button>
           <Button onClick={onShowOverview} variant="outline" size="sm" className="text-xs md:text-sm">
             <BarChart3 className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
             <span className="hidden md:inline">Overview</span>

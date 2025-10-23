@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { ProductsComparisonChart } from "@/components/ProductsComparisonChart";
 import { SalesTimelineChart } from "@/components/SalesTimelineChart";
 import { StatCard } from "@/components/StatCard";
+import { BusinessTips } from "@/components/BusinessTips";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -117,6 +118,9 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
 
       {/* Sales Timeline Chart */}
       <SalesTimelineChart products={products} />
+
+      {/* Business Tips */}
+      <BusinessTips />
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">

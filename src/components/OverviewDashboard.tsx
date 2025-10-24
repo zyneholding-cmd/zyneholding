@@ -5,6 +5,8 @@ import { ProductsComparisonChart } from "@/components/ProductsComparisonChart";
 import { SalesTimelineChart } from "@/components/SalesTimelineChart";
 import { StatCard } from "@/components/StatCard";
 import { BusinessTips } from "@/components/BusinessTips";
+import { ProductStockAlert } from "@/components/ProductStockAlert";
+import { AdvancedAnalytics } from "@/components/AdvancedAnalytics";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -116,8 +118,14 @@ export const OverviewDashboard = ({ products }: OverviewDashboardProps) => {
         />
       </div>
 
+      {/* Stock Alerts */}
+      <ProductStockAlert products={products} />
+
       {/* Sales Timeline Chart */}
       <SalesTimelineChart products={products} />
+
+      {/* Advanced Analytics */}
+      <AdvancedAnalytics products={products} />
 
       {/* Business Tips */}
       <BusinessTips />

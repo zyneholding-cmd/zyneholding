@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Package, BarChart3, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { CurrencySwitcher } from "@/components/CurrencySwitcher";
+import { useState } from "react";
 
 interface TopBarProps {
   onAddProduct: () => void;
@@ -20,6 +22,7 @@ export const TopBar = ({
   totalRemaining,
 }: TopBarProps) => {
   const { theme, setTheme } = useTheme();
+  const [currency, setCurrency] = useState({ code: 'USD', symbol: '$', rate: 1 });
 
   return (
     <div className="h-14 md:h-16 border-b bg-card px-3 md:px-6 flex items-center justify-between card-shadow">

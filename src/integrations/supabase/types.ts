@@ -14,30 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          key: string
+          value: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          key: string
+          value: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          key?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      currencies: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          rate: number
+          symbol: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          rate?: number
+          symbol: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          rate?: number
+          symbol?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
+          barcode: string | null
+          category: string | null
           color: string
           cost_price: number
           created_at: string | null
           id: string
           image: string | null
+          min_stock: number | null
           name: string
+          stock: number | null
         }
         Insert: {
+          barcode?: string | null
+          category?: string | null
           color: string
           cost_price: number
           created_at?: string | null
           id?: string
           image?: string | null
+          min_stock?: number | null
           name: string
+          stock?: number | null
         }
         Update: {
+          barcode?: string | null
+          category?: string | null
           color?: string
           cost_price?: number
           created_at?: string | null
           id?: string
           image?: string | null
+          min_stock?: number | null
           name?: string
+          stock?: number | null
         }
         Relationships: []
       }

@@ -24,6 +24,10 @@ export interface Product {
   color: string;
   image: string;
   sales: Sale[];
+  stock?: number;
+  category?: string;
+  minStock?: number;
+  barcode?: string;
 }
 
 export interface AppData {

@@ -14,14 +14,10 @@ interface Message {
 
 export const ChatAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hello! I'm your sales assistant. I can help you with customer data, sales analytics, and product information. What would you like to know?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationLoaded, setConversationLoaded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,17 +26,56 @@ export const ChatAssistant = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (isOpen && !conversationLoaded) {
+      loadConversationHistory();
+    }
+  }, [isOpen]);
+
+  const loadConversationHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setMessages(data.map(msg => ({ role: msg.role as "user" | "assistant", content: msg.content })));
+      } else {
+        setMessages([{
+          role: "assistant",
+          content: "Hello! I'm your sales assistant with memory. I can help you with customer data, sales analytics, product information, and I'll remember our conversations. What would you like to know?",
+        }]);
+      }
+      setConversationLoaded(true);
+    } catch (error) {
+      console.error("Error loading conversation history:", error);
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
+    const currentInput = input;
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
+      // Save user message
+      await supabase.from("chat_messages").insert({
+        role: "user",
+        content: currentInput,
+      });
+
       const { data, error } = await supabase.functions.invoke("chat-assistant", {
-        body: { message: input },
+        body: { 
+          message: currentInput,
+          conversationHistory: messages 
+        },
       });
 
       if (error) throw error;
@@ -51,17 +86,26 @@ export const ChatAssistant = () => {
           content: data.reply,
         };
         setMessages((prev) => [...prev, assistantMessage]);
+
+        // Save assistant message
+        await supabase.from("chat_messages").insert({
+          role: "assistant",
+          content: data.reply,
+        });
       }
     } catch (error: any) {
       console.error("Error sending message:", error);
       toast.error(error.message || "Failed to send message");
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
-        },
-      ]);
+      const errorMessage = {
+        role: "assistant" as const,
+        content: "Sorry, I encountered an error. Please try again.",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      
+      await supabase.from("chat_messages").insert({
+        role: "assistant",
+        content: errorMessage.content,
+      });
     } finally {
       setIsLoading(false);
     }

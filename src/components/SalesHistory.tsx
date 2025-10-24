@@ -1,7 +1,8 @@
 import { Sale, Product } from "@/types/sales";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, User, Download, Filter } from "lucide-react";
+import { Edit, Trash2, User, Download, Filter, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { exportSalesToPDF } from "@/utils/pdfExport";
 import { useState } from "react";
 import {
@@ -21,6 +22,8 @@ interface SalesHistoryProps {
 
 export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, product }: SalesHistoryProps) => {
   const [statusFilter, setStatusFilter] = useState<string[]>(["Paid", "Partial", "Pending"]);
+  const [customerSearch, setCustomerSearch] = useState("");
+  
   const handleExportPDF = () => {
     if (product) {
       exportSalesToPDF(product);
@@ -46,13 +49,29 @@ export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, 
     );
   };
 
-  const filteredSales = sales.filter((sale) => statusFilter.includes(sale.status));
+  const filteredSales = sales.filter((sale) => 
+    statusFilter.includes(sale.status) &&
+    (customerSearch === "" || 
+      sale.customer.toLowerCase().includes(customerSearch.toLowerCase()) ||
+      sale.contact?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+      sale.address?.toLowerCase().includes(customerSearch.toLowerCase()))
+  );
 
   return (
     <div className="space-y-3">
-      {product && sales.length > 0 && (
-        <div className="flex flex-wrap gap-2 justify-between mb-4">
-          <DropdownMenu>
+      {sales.length > 0 && (
+        <div className="space-y-3 mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by customer name, contact, or address..."
+              value={customerSearch}
+              onChange={(e) => setCustomerSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2 justify-between">
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
                 <Filter className="h-4 w-4" />
@@ -86,10 +105,13 @@ export const SalesHistory = ({ sales, onEditSale, onDeleteSale, onViewCustomer, 
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button onClick={handleExportPDF} variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
+          {product && (
+            <Button onClick={handleExportPDF} variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export PDF
+            </Button>
+          )}
+          </div>
         </div>
       )}
       {filteredSales.length === 0 ? (

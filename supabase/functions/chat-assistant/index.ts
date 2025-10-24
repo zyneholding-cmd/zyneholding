@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, action } = await req.json();
+    const { message, action, conversationHistory = [] } = await req.json();
     
     if (!message && !action) {
       throw new Error('Message or action is required');
@@ -91,7 +91,14 @@ serve(async (req) => {
       pendingPayments: sales?.reduce((sum, s) => sum + Number(s.remaining), 0) || 0,
     };
 
-    const systemPrompt = `You are a helpful sales dashboard assistant. You have access to real-time data from a sales management system.
+    const systemPrompt = `You are an advanced AI sales assistant with persistent memory for a comprehensive business management system.
+    
+CAPABILITIES:
+- You remember ALL previous conversations and context from this chat session
+- Access to real-time data about products (including stock, categories, barcodes), sales, and customers
+- Ability to update customer information, sales records, and product details
+- Advanced analytics and business insights
+- Multi-currency support awareness
 
 Current Data Summary:
 - Total Products: ${contextData.totalProducts}
@@ -100,24 +107,36 @@ Current Data Summary:
 - Total Profit: PKR ${contextData.totalProfit.toLocaleString()}
 - Pending Payments: PKR ${contextData.pendingPayments.toLocaleString()}
 
-Products Data:
+Products Data (with stock, category, barcode):
 ${JSON.stringify(contextData.products, null, 2)}
 
 Sales Data:
 ${JSON.stringify(contextData.sales, null, 2)}
 
-Your job is to:
-1. Answer questions about customers, products, and sales
-2. Provide insights and analytics
-3. Help with customer management
-4. Suggest actions based on the data
-5. Always use the EXACT data provided above
-6. Format numbers with PKR currency
-7. Be concise and helpful
-8. You can help update sale information like payment status, amounts, or customer details
+RESPONSIBILITIES:
+1. Customer Management: Track customers, their payment status, contact info, and purchase history
+2. Inventory Tracking: Monitor stock levels, alert on low inventory, track product categories
+3. Sales Analytics: Analyze revenue, profit margins, payment trends, and performance metrics
+4. Business Intelligence: Provide actionable insights and recommendations for scaling
+5. Data Updates: When asked, update sales status, customer info, or product details using available actions
 
-When users ask about specific customers, products, or sales, reference the actual data provided.
-If a user asks to update information, provide clear confirmation of what will be updated.`;
+CONVERSATION MEMORY:
+- You maintain context across all messages in this session
+- Reference previous questions and answers naturally
+- Build on earlier topics without requiring repetition
+- Remember customer names, product details, and specific requests mentioned earlier
+
+Always use EXACT data provided. Format numbers with appropriate currency. Be professional, insightful, and remember: you have full memory of this conversation.`;
+
+    // Build conversation with history
+    const conversationMessages = [
+      { role: 'system', content: systemPrompt },
+      ...conversationHistory.map((msg: any) => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      { role: 'user', content: message },
+    ];
 
     // Call Lovable AI
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -128,10 +147,7 @@ If a user asks to update information, provide clear confirmation of what will be
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
+        messages: conversationMessages,
       }),
     });
 

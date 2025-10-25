@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDatabase } from "@/hooks/useDatabase";
 import { TopBar } from "@/components/TopBar";
 import { Sidebar } from "@/components/Sidebar";
@@ -16,11 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Plus, Menu } from "lucide-react";
+import { Plus, Menu, Loader2 } from "lucide-react";
 import { Sale } from "@/types/sales";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const { data, isLoading, addProduct, updateProduct, deleteProduct, addSale, updateSale, deleteSale } = useDatabase();
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -29,6 +33,12 @@ const Index = () => {
   const [showOverview, setShowOverview] = useState(false);
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
 
   const selectedProduct = data.products.find((p) => p.id === selectedProductId) || null;
 
@@ -50,8 +60,9 @@ const Index = () => {
   );
 
   const handleAddProduct = async (productData: any) => {
+    if (!user?.id) return;
     try {
-      const newProduct = await addProduct(productData);
+      const newProduct = await addProduct(productData, user.id);
       setSelectedProductId(newProduct.id);
     } catch (error) {
       // Error already handled by useDatabase hook
@@ -72,9 +83,9 @@ const Index = () => {
   };
 
   const handleAddSale = async (saleData: any) => {
-    if (selectedProduct) {
+    if (selectedProduct && user?.id) {
       try {
-        await addSale(selectedProduct.id, saleData);
+        await addSale(selectedProduct.id, saleData, user.id);
       } catch (error) {
         // Error already handled by useDatabase hook
       }
@@ -101,10 +112,18 @@ const Index = () => {
     }
   };
 
+  if (authLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
-        <div className="text-lg">Loading...</div>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }

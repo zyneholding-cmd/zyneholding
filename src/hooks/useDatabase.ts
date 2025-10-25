@@ -34,6 +34,10 @@ export const useDatabase = () => {
             costPrice: Number(product.cost_price),
             color: product.color,
             image: product.image || "",
+            category: product.category || "general",
+            stock: Number(product.stock) || 0,
+            minStock: Number(product.min_stock) || 5,
+            barcode: product.barcode || "",
             sales: (salesData || []).map((sale) => ({
               id: sale.id,
               customer: sale.customer,
@@ -69,7 +73,7 @@ export const useDatabase = () => {
     fetchProducts();
   }, []);
 
-  const addProduct = async (product: Omit<Product, "id" | "sales">) => {
+  const addProduct = async (product: Omit<Product, "id" | "sales">, userId: string) => {
     try {
       const { data, error } = await supabase
         .from("products")
@@ -78,6 +82,11 @@ export const useDatabase = () => {
           cost_price: product.costPrice,
           color: product.color,
           image: product.image,
+          category: product.category,
+          stock: product.stock,
+          min_stock: product.minStock,
+          barcode: product.barcode,
+          user_id: userId,
         })
         .select()
         .single();
@@ -90,6 +99,10 @@ export const useDatabase = () => {
         costPrice: Number(data.cost_price),
         color: data.color,
         image: data.image || "",
+        category: data.category,
+        stock: Number(data.stock),
+        minStock: Number(data.min_stock),
+        barcode: data.barcode,
         sales: [],
       };
 
@@ -144,7 +157,7 @@ export const useDatabase = () => {
     }
   };
 
-  const addSale = async (productId: string, sale: Omit<Sale, "id">) => {
+  const addSale = async (productId: string, sale: Omit<Sale, "id">, userId: string) => {
     try {
       const { data, error } = await supabase
         .from("sales")
@@ -165,6 +178,7 @@ export const useDatabase = () => {
           date: sale.date,
           due_date: sale.dueDate,
           notes: sale.notes,
+          user_id: userId,
         })
         .select()
         .single();

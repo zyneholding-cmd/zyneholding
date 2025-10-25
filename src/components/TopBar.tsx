@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Package, BarChart3, Moon, Sun } from "lucide-react";
+import { Package, BarChart3, Moon, Sun, LogOut, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { playSound } from "@/utils/sounds";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TopBarProps {
   onAddProduct: () => void;
@@ -22,6 +30,7 @@ export const TopBar = ({
   totalRemaining,
 }: TopBarProps) => {
   const { theme, setTheme } = useTheme();
+  const { user, signOut } = useAuth();
   const [currency, setCurrency] = useState({ code: 'USD', symbol: '$', rate: 1 });
 
   return (
@@ -52,8 +61,13 @@ export const TopBar = ({
         </div>
         
         <div className="flex gap-1 md:gap-2">
+          <CurrencySwitcher onCurrencyChange={setCurrency} />
+          
           <Button 
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
+            onClick={() => {
+              playSound('click');
+              setTheme(theme === "dark" ? "light" : "dark");
+            }} 
             variant="outline" 
             size="sm"
             className="text-xs md:text-sm"
@@ -64,14 +78,51 @@ export const TopBar = ({
               <Moon className="h-3 w-3 md:h-4 md:w-4" />
             )}
           </Button>
-          <Button onClick={onShowOverview} variant="outline" size="sm" className="text-xs md:text-sm">
+          <Button 
+            onClick={() => {
+              playSound('click');
+              onShowOverview();
+            }} 
+            variant="outline" 
+            size="sm" 
+            className="text-xs md:text-sm"
+          >
             <BarChart3 className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
             <span className="hidden md:inline">Overview</span>
           </Button>
-          <Button onClick={onAddProduct} size="sm" className="text-xs md:text-sm">
+          <Button 
+            onClick={() => {
+              playSound('click');
+              onAddProduct();
+            }} 
+            size="sm" 
+            className="text-xs md:text-sm"
+          >
             <Package className="h-3 w-3 md:h-4 md:w-4 md:mr-2" />
             <span className="hidden sm:inline">Add Product</span>
           </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="text-xs md:text-sm">
+                <User className="h-3 w-3 md:h-4 md:w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem disabled className="text-xs">
+                {user?.email}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  playSound('click');
+                  signOut();
+                }}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

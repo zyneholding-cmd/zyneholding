@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Upload, Image as ImageIcon } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { playSound } from "@/utils/sounds";
 
 interface AddProductModalProps {
   open: boolean;
@@ -25,6 +27,7 @@ interface AddProductModalProps {
 }
 
 export const AddProductModal = ({ open, onClose, onSubmit }: AddProductModalProps) => {
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [image, setImage] = useState("");
@@ -75,7 +78,12 @@ export const AddProductModal = ({ open, onClose, onSubmit }: AddProductModalProp
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !costPrice) return;
+    if (!user) {
+      toast.error("You must be logged in to add products");
+      return;
+    }
 
+    playSound('success');
     onSubmit({
       name,
       costPrice: parseFloat(costPrice),

@@ -92,6 +92,7 @@ export type Database = {
           min_stock: number | null
           name: string
           stock: number | null
+          user_id: string | null
         }
         Insert: {
           barcode?: string | null
@@ -104,6 +105,7 @@ export type Database = {
           min_stock?: number | null
           name: string
           stock?: number | null
+          user_id?: string | null
         }
         Update: {
           barcode?: string | null
@@ -116,6 +118,37 @@ export type Database = {
           min_stock?: number | null
           name?: string
           stock?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          business_name: string | null
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          business_name?: string | null
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          business_name?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -139,6 +172,7 @@ export type Database = {
           sale_price: number
           status: string
           total: number
+          user_id: string | null
         }
         Insert: {
           address?: string | null
@@ -159,6 +193,7 @@ export type Database = {
           sale_price: number
           status: string
           total: number
+          user_id?: string | null
         }
         Update: {
           address?: string | null
@@ -179,6 +214,7 @@ export type Database = {
           sale_price?: number
           status?: string
           total?: number
+          user_id?: string | null
         }
         Relationships: [
           {

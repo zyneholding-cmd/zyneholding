@@ -10,6 +10,9 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Tasks from "./pages/Tasks";
+import Customers from "./pages/Customers";
+import Calendar from "./pages/Calendar";
+import Documents from "./pages/Documents";
 import Team from "./pages/Team";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +35,9 @@ const App = () => (
               <Route element={<MainLayout />}>
                 <Route path="/dashboard" element={<Index />} />
                 <Route path="/tasks" element={<Tasks />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/documents" element={<Documents />} />
                 <Route path="/team" element={<Team />} />
               </Route>
               

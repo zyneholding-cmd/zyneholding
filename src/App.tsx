@@ -27,10 +27,10 @@ const App = () => (
               <Route path="/" element={<Navigate to="/landing" replace />} />
               <Route path="/landing" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Index />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>
+                <Route path="/dashboard" element={<Index />} />
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/team" element={<Team />} />
               </Route>

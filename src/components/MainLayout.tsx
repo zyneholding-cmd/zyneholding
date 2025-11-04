@@ -40,7 +40,7 @@ export const MainLayout = () => {
 
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Tasks", path: "/tasks", icon: ListTodo, disabled: true },
+    { name: "Tasks", path: "/tasks", icon: ListTodo },
     { name: "Chat", path: "/chat", icon: MessageSquare, disabled: true },
     { name: "Notes", path: "/notes", icon: FileText, disabled: true },
   ];

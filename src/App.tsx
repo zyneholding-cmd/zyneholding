@@ -9,6 +9,7 @@ import { MainLayout } from "@/components/MainLayout";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import Tasks from "./pages/Tasks";
 import Team from "./pages/Team";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +31,7 @@ const App = () => (
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>
+                <Route path="/tasks" element={<Tasks />} />
                 <Route path="/team" element={<Team />} />
               </Route>
               

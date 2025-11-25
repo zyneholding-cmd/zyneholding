@@ -66,6 +66,13 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      boxShadow: {
+        'soft': '0 4px 12px -2px hsl(var(--shadow-md))',
+        'card': '0 2px 8px -1px hsl(var(--shadow-sm))',
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

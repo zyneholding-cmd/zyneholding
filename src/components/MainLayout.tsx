@@ -76,17 +76,17 @@ export const MainLayout = () => {
   return (
     <>
       <div className="flex h-screen bg-background">
-        {/* Colorful Icon Sidebar */}
-        <aside className="w-20 border-r border-border/50 bg-gradient-to-b from-card via-card/95 to-card/90 flex flex-col items-center py-6 gap-3 shadow-xl backdrop-blur-sm">
+        {/* Minimal Professional Sidebar */}
+        <aside className="w-16 border-r border-border bg-card flex flex-col items-center py-4 gap-2">
           {/* Logo */}
           <Link to="/dashboard" className="mb-6 group">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 animate-float">
-              <span className="text-white font-bold text-xl">Z</span>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 transition-colors">
+              <span className="text-primary-foreground font-bold text-lg">Z</span>
             </div>
           </Link>
 
-          {/* User Tools */}
-          <div className="flex-1 flex flex-col gap-2 w-full px-2 overflow-y-auto scrollbar-hide">
+          {/* Navigation Icons */}
+          <div className="flex-1 flex flex-col gap-1 w-full px-2 overflow-y-auto">
             {userTools.slice(0, 8).map((tool, idx) => {
               const Icon = tool.icon;
               const isActive = currentPath === tool.path;
@@ -96,22 +96,18 @@ export const MainLayout = () => {
                   key={tool.id}
                   to={tool.path}
                   className={cn(
-                    "group relative p-3 rounded-2xl transition-all duration-300 hover:scale-110",
+                    "group relative p-2 rounded-lg transition-colors",
                     isActive 
-                      ? `bg-gradient-to-br from-${tool.color}/80 to-${tool.color} shadow-lg shadow-${tool.color}/40`
-                      : "hover:bg-accent"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                   title={tool.name}
                 >
-                  <Icon className={cn(
-                    "h-6 w-6 transition-colors",
-                    isActive ? "text-white" : "text-foreground group-hover:text-primary"
-                  )} />
+                  <Icon className="h-5 w-5" />
                   
                   {/* Tooltip */}
-                  <div className="absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground rounded-xl shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50">
-                    <div className="text-sm font-medium">{tool.name}</div>
-                    <div className="text-xs text-muted-foreground">{tool.description}</div>
+                  <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
+                    {tool.name}
                   </div>
                 </Link>
               );
@@ -122,23 +118,23 @@ export const MainLayout = () => {
               variant="ghost"
               size="icon"
               onClick={() => setShowAllTools(true)}
-              className="p-3 rounded-2xl hover:bg-gradient-to-br hover:from-primary/20 hover:to-secondary/20 hover:scale-110 transition-all duration-300 mt-2"
+              className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground mt-2"
               title="All Tools"
             >
-              <Grid3x3 className="h-6 w-6" />
+              <Grid3x3 className="h-5 w-5" />
             </Button>
           </div>
 
           {/* Bottom Actions */}
-          <div className="flex flex-col gap-2 pt-4 border-t border-border/50">
+          <div className="flex flex-col gap-1 pt-2 border-t border-border w-full px-2">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.location.href = "/manage-tools"}
-              className="rounded-2xl hover:bg-accent hover:scale-110 transition-all duration-300"
+              onClick={() => setShowAllTools(true)}
+              className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground"
               title="Manage Tools"
             >
-              <Settings className="h-6 w-6" />
+              <Settings className="h-5 w-5" />
             </Button>
             
             <Button
@@ -148,10 +144,10 @@ export const MainLayout = () => {
                 setIsDark(!isDark);
                 document.documentElement.classList.toggle("dark");
               }}
-              className="rounded-2xl hover:bg-accent hover:scale-110 transition-all duration-300"
+              className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground"
               title={isDark ? "Light Mode" : "Dark Mode"}
             >
-              {isDark ? <Sun className="h-6 w-6 text-yellow-500" /> : <Moon className="h-6 w-6 text-primary" />}
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
           </div>
         </aside>
@@ -159,22 +155,22 @@ export const MainLayout = () => {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
           {/* Top Navigation Bar */}
-          <header className="h-20 border-b border-border/50 bg-card/50 backdrop-blur-xl px-8 flex items-center justify-between shadow-sm">
+          <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              <h1 className="text-xl font-semibold text-foreground">
                 Zyne Holding
               </h1>
               
-              <nav className="flex items-center gap-2">
+              <nav className="flex items-center gap-1">
                 {topNavItems.map((item, idx) => (
                   <Link
                     key={idx}
                     to={item.path}
                     className={cn(
-                      "px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300",
+                      "px-4 py-2 rounded-md text-sm font-medium transition-colors",
                       currentPath === item.path
-                        ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg shadow-primary/30 scale-105"
-                        : "text-foreground hover:bg-accent/50 hover:scale-105"
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
                     )}
                   >
                     {item.name}
@@ -184,40 +180,40 @@ export const MainLayout = () => {
             </div>
 
             {/* Right Side Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-accent/50 hover:scale-110 transition-all duration-300"
+                className="rounded-md"
               >
                 <Search className="h-5 w-5" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-accent/50 hover:scale-110 transition-all duration-300 relative"
+                className="rounded-md relative"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-accent/50 hover:scale-110 transition-all duration-300"
+                className="rounded-md"
               >
                 <Mail className="h-5 w-5" />
               </Button>
-              <Avatar className="h-10 w-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all cursor-pointer">
+              <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage src="" />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white">
-                  <User className="h-5 w-5" />
+                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                  <User className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
             </div>
           </header>
 
           {/* Page Content */}
-          <main className="flex-1 overflow-auto bg-gradient-to-br from-background via-background to-muted/20">
+          <main className="flex-1 overflow-auto bg-background">
             <Outlet />
           </main>
         </div>

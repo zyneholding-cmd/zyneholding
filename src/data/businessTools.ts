@@ -39,7 +39,7 @@ export const businessTools: BusinessTool[] = [
   
   // Dashboard & Analytics (8 tools)
   { id: "overview", name: "Overview Dashboard", description: "Main business overview", icon: Home, color: "tool-blue", category: "Dashboard & Analytics", path: "/dashboard", isImplemented: true },
-  { id: "analytics", name: "Advanced Analytics", description: "Deep business insights", icon: BarChart3, color: "tool-purple", category: "Dashboard & Analytics", path: "/dashboard", isImplemented: true },
+  { id: "analytics", name: "Advanced Analytics", description: "Deep business insights", icon: BarChart3, color: "tool-purple", category: "Dashboard & Analytics", path: "/insights", isImplemented: true },
   { id: "reports", name: "Reports", description: "Generate business reports", icon: FileBarChart, color: "tool-pink", category: "Dashboard & Analytics", path: "#", isImplemented: false },
   { id: "kpi", name: "KPI Dashboard", description: "Track key metrics", icon: Target, color: "tool-orange", category: "Dashboard & Analytics", path: "#", isImplemented: false },
   { id: "forecasting", name: "Forecasting", description: "Predict trends", icon: TrendingUpIcon, color: "tool-green", category: "Dashboard & Analytics", path: "#", isImplemented: false },
@@ -48,7 +48,7 @@ export const businessTools: BusinessTool[] = [
   { id: "dashboard-custom", name: "Custom Dashboard", description: "Build your own", icon: Layers, color: "tool-red", category: "Dashboard & Analytics", path: "#", isImplemented: false },
 
   // Sales & CRM (12 tools)
-  { id: "sales", name: "Sales Tracking", description: "Monitor all sales", icon: TrendingUp, color: "tool-green", category: "Sales & CRM", path: "/dashboard", isImplemented: true },
+  { id: "sales", name: "Sales Tracking", description: "Monitor all sales", icon: TrendingUp, color: "tool-green", category: "Sales & CRM", path: "/sales", isImplemented: true },
   { id: "customers", name: "Customer Management", description: "CRM system", icon: Users, color: "tool-blue", category: "Sales & CRM", path: "/customers", isImplemented: true },
   { id: "leads", name: "Lead Management", description: "Track potential customers", icon: UserPlus, color: "tool-purple", category: "Sales & CRM", path: "#", isImplemented: false },
   { id: "pipeline", name: "Sales Pipeline", description: "Visualize sales stages", icon: TrendingUp, color: "tool-pink", category: "Sales & CRM", path: "#", isImplemented: false },
@@ -62,7 +62,7 @@ export const businessTools: BusinessTool[] = [
   { id: "referrals", name: "Referrals", description: "Referral tracking", icon: Share2, color: "tool-green", category: "Sales & CRM", path: "#", isImplemented: false },
 
   // Products & Inventory (10 tools)
-  { id: "products", name: "Product Management", description: "Manage inventory", icon: Package, color: "tool-orange", category: "Products & Inventory", path: "/dashboard", isImplemented: true },
+  { id: "products", name: "Product Management", description: "Manage inventory", icon: Package, color: "tool-orange", category: "Products & Inventory", path: "/products", isImplemented: true },
   { id: "inventory", name: "Inventory Tracking", description: "Stock management", icon: Warehouse, color: "tool-blue", category: "Products & Inventory", path: "#", isImplemented: false },
   { id: "suppliers", name: "Suppliers", description: "Vendor management", icon: Truck, color: "tool-purple", category: "Products & Inventory", path: "#", isImplemented: false },
   { id: "purchase-orders", name: "Purchase Orders", description: "Order from suppliers", icon: ShoppingCart, color: "tool-pink", category: "Products & Inventory", path: "#", isImplemented: false },

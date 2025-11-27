@@ -9,6 +9,9 @@ import { MainLayout } from "@/components/MainLayout";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import SalesDashboard from "./pages/SalesDashboard";
+import ProductManagement from "./pages/ProductManagement";
+import Insights from "./pages/Insights";
 import Tasks from "./pages/Tasks";
 import Customers from "./pages/Customers";
 import Calendar from "./pages/Calendar";
@@ -35,6 +38,9 @@ const App = () => (
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>
                 <Route path="/dashboard" element={<Index />} />
+                <Route path="/sales" element={<SalesDashboard />} />
+                <Route path="/products" element={<ProductManagement />} />
+                <Route path="/insights" element={<Insights />} />
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/calendar" element={<Calendar />} />

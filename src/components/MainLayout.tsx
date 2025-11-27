@@ -159,7 +159,7 @@ export const MainLayout = () => {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
           {/* Top Navigation Bar */}
-          <header className="h-20 border-b border-border/50 bg-card/50 backdrop-blur-xl px-8 flex items-center justify-between shadow-sm"
+          <header className="h-20 border-b border-border/50 bg-card/50 backdrop-blur-xl px-8 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-8">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Zyne Holding

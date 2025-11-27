@@ -19,7 +19,7 @@ import {
   Info, HelpCircle, BookOpen, GraduationCap, Lightbulb,
   Flag, Bookmark, Archive, Folder, FolderOpen,
   Link, ExternalLink, Anchor, Code, Terminal,
-  Cpu, Activity, TrendingUpIcon, Layers, Package2
+  Cpu, Activity, TrendingUpIcon, Layers, Package2, Workflow
 } from "lucide-react";
 
 export interface BusinessTool {
@@ -34,6 +34,9 @@ export interface BusinessTool {
 }
 
 export const businessTools: BusinessTool[] = [
+  // Workflow Builder
+  { id: "workflow", name: "Workflow Builder", description: "Connect tools visually", icon: Workflow, color: "tool-purple", category: "Dashboard & Analytics", path: "/workflow", isImplemented: true },
+  
   // Dashboard & Analytics (8 tools)
   { id: "overview", name: "Overview Dashboard", description: "Main business overview", icon: Home, color: "tool-blue", category: "Dashboard & Analytics", path: "/dashboard", isImplemented: true },
   { id: "analytics", name: "Advanced Analytics", description: "Deep business insights", icon: BarChart3, color: "tool-purple", category: "Dashboard & Analytics", path: "/dashboard", isImplemented: true },

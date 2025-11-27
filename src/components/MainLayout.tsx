@@ -96,17 +96,17 @@ export const MainLayout = () => {
                   key={tool.id}
                   to={tool.path}
                   className={cn(
-                    "group relative p-2 rounded-lg transition-colors",
+                    "group relative p-2.5 rounded-md transition-all",
                     isActive 
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   title={tool.name}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5 mx-auto" strokeWidth={isActive ? 2.5 : 2} />
                   
                   {/* Tooltip */}
-                  <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
+                  <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
                     {tool.name}
                   </div>
                 </Link>

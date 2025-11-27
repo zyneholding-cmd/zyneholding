@@ -13,41 +13,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 245 25% 95%;
-    --foreground: 240 10% 10%;
+    --background: 220 25% 97%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 10% 10%;
+    --secondary: 280 65% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 240 5% 96%;
-    --accent-foreground: 240 10% 10%;
+    --accent: 340 85% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 142 76% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
+    --warning: 38 92% 55%;
     --warning-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 240 10% 10%;
+    --border: 220 15% 88%;
+    --input: 220 15% 92%;
+    --ring: 217 91% 60%;
 
-    --radius: 1.25rem;
+    --radius: 1.5rem;
+    
+    /* Colorful accents for tools */
+    --tool-blue: 217 91% 60%;
+    --tool-purple: 280 65% 60%;
+    --tool-pink: 340 85% 60%;
+    --tool-orange: 25 95% 60%;
+    --tool-green: 142 76% 45%;
+    --tool-cyan: 190 90% 50%;
+    --tool-yellow: 48 100% 55%;
+    --tool-red: 0 84% 60%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5% 45%;
@@ -59,11 +69,13 @@ All colors MUST be HSL.
     --sidebar-ring: 240 10% 10%;
 
     /* Custom tokens */
-    --shadow-sm: 0 1px 2px 0 hsl(240 10% 10% / 0.04);
-    --shadow-md: 0 4px 12px -2px hsl(240 10% 10% / 0.06);
-    --shadow-lg: 0 20px 25px -5px hsl(240 10% 10% / 0.08);
-    --shadow-xl: 0 25px 50px -12px hsl(240 10% 10% / 0.12);
+    --shadow-sm: 0 1px 2px 0 hsl(220 15% 15% / 0.04);
+    --shadow-md: 0 4px 12px -2px hsl(220 15% 15% / 0.08);
+    --shadow-lg: 0 10px 30px -5px hsl(220 15% 15% / 0.12);
+    --shadow-xl: 0 20px 50px -12px hsl(220 15% 15% / 0.2);
+    --shadow-glow: 0 0 30px hsl(217 91% 60% / 0.3);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
@@ -178,5 +190,42 @@ All colors MUST be HSL.
 
   .animate-pulse {
     animation: pulse-slow 2s ease-in-out infinite;
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .backdrop-blur-glass {
+    backdrop-filter: blur(12px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+
+  .dark .backdrop-blur-glass {
+    background-color: rgba(20, 20, 30, 0.75);
   }
 }

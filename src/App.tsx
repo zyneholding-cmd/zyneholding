@@ -14,6 +14,7 @@ import Customers from "./pages/Customers";
 import Calendar from "./pages/Calendar";
 import Documents from "./pages/Documents";
 import Team from "./pages/Team";
+import Workflow from "./pages/Workflow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/documents" element={<Documents />} />
                 <Route path="/team" element={<Team />} />
+                <Route path="/workflow" element={<Workflow />} />
               </Route>
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

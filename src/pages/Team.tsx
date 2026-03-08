@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserPlus, MoreVertical, Shield, Crown, User as UserIcon, Mail, Calendar } from "lucide-react";
+import { UserPlus, MoreVertical, Shield, Crown, User as UserIcon, Mail, Calendar, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,

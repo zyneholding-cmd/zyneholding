@@ -74,7 +74,7 @@ export const businessTools: BusinessTool[] = [
   { id: "catalog", name: "Product Catalog", description: "Digital catalog", icon: BookOpen, color: "tool-blue", category: "Products & Inventory", path: "#", isImplemented: false },
 
   // Finance & Accounting (15 tools)
-  { id: "invoices", name: "Invoicing", description: "Create invoices", icon: Receipt, color: "tool-green", category: "Finance & Accounting", path: "#", isImplemented: false },
+  { id: "invoices", name: "Invoicing", description: "Create invoices", icon: Receipt, color: "tool-green", category: "Finance & Accounting", path: "/invoices", isImplemented: true },
   { id: "payments", name: "Payment Processing", description: "Accept payments", icon: CreditCard, color: "tool-blue", category: "Finance & Accounting", path: "#", isImplemented: false },
   { id: "expenses", name: "Expense Tracking", description: "Track business costs", icon: DollarSign, color: "tool-purple", category: "Finance & Accounting", path: "#", isImplemented: false },
   { id: "budgeting", name: "Budgeting", description: "Financial planning", icon: PieChart, color: "tool-pink", category: "Finance & Accounting", path: "#", isImplemented: false },

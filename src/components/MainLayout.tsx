@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Moon, Sun, Search, Bell, Mail, User, Grid3x3, Settings,
   LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox, Briefcase,
-  Building2, UserCheck,
+  Building2, UserCheck, Home, Send, FolderOpen, Star,
 } from "lucide-react";
 
 export const MainLayout = () => {
@@ -226,57 +226,95 @@ export const MainLayout = () => {
       <div className="flex h-screen bg-background">
         {/* Sidebar */}
         <aside className="w-16 border-r border-border bg-card flex flex-col items-center py-4 gap-2">
-          <Link to="/dashboard" className="mb-6 group">
+          <Link to={mode === 'employee' ? "/employee" : "/dashboard"} className="mb-6 group">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 transition-colors">
               <span className="text-primary-foreground font-bold text-lg">Z</span>
             </div>
           </Link>
 
           <div className="flex-1 flex flex-col gap-1 w-full px-2 overflow-y-auto">
-            {userTools.slice(0, 8).map((tool) => {
-              const Icon = tool.icon;
-              const isActive = currentPath === tool.path;
-              return (
-                <Link
-                  key={tool.id}
-                  to={tool.path}
-                  className={cn(
-                    "group relative p-2.5 rounded-md transition-all",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                  title={tool.name}
-                >
-                  <Icon className="h-5 w-5 mx-auto" strokeWidth={isActive ? 2.5 : 2} />
-                  <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
-                    {tool.name}
-                  </div>
-                </Link>
-              );
-            })}
+            {mode === 'employee' ? (
+              <>
+                {/* Employee-specific sidebar */}
+                {[
+                  { id: "hub", name: "Employee Hub", icon: Home, path: "/employee" },
+                  { id: "inbox", name: "Inbox", icon: Mail, path: "/inbox" },
+                  { id: "calendar", name: "Calendar", icon: Calendar, path: "/calendar" },
+                  { id: "tasks", name: "My Tasks", icon: CheckCircle, path: "/tasks" },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentPath === item.path;
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.path}
+                      className={cn(
+                        "group relative p-2.5 rounded-md transition-all",
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
+                      title={item.name}
+                    >
+                      <Icon className="h-5 w-5 mx-auto" strokeWidth={isActive ? 2.5 : 2} />
+                      <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
+                        {item.name}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {/* Business tools sidebar */}
+                {userTools.slice(0, 8).map((tool) => {
+                  const Icon = tool.icon;
+                  const isActive = currentPath === tool.path;
+                  return (
+                    <Link
+                      key={tool.id}
+                      to={tool.path}
+                      className={cn(
+                        "group relative p-2.5 rounded-md transition-all",
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
+                      title={tool.name}
+                    >
+                      <Icon className="h-5 w-5 mx-auto" strokeWidth={isActive ? 2.5 : 2} />
+                      <div className="absolute left-full ml-2 px-3 py-1.5 bg-popover text-popover-foreground rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 text-sm border">
+                        {tool.name}
+                      </div>
+                    </Link>
+                  );
+                })}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowAllTools(true)}
-              className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground mt-2"
-              title="All Tools"
-            >
-              <Grid3x3 className="h-5 w-5" />
-            </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowAllTools(true)}
+                  className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground mt-2"
+                  title="All Tools"
+                >
+                  <Grid3x3 className="h-5 w-5" />
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="flex flex-col gap-1 pt-2 border-t border-border w-full px-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowAllTools(true)}
-              className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground"
-              title="Manage Tools"
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
+            {mode === 'business' && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAllTools(true)}
+                className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground"
+                title="Manage Tools"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"

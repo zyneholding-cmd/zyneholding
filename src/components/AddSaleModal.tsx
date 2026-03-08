@@ -43,16 +43,36 @@ export const AddSaleModal = ({ open, onClose, onSubmit, product }: AddSaleModalP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customer || !salePrice || !product) return;
+    if (!product) return;
 
-    const profit = (parseFloat(salePrice) - product.costPrice) * parseFloat(quantity);
+    const parsed = saleSchema.safeParse({
+      customer,
+      contact: contact || undefined,
+      address: address || undefined,
+      quantity: parseInt(quantity),
+      salePrice: parseFloat(salePrice),
+      notes: notes || undefined,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Invalid input";
+      toast.error(firstError);
+      return;
+    }
+
+    if (paymentType === "partial" && paidAmount > total) {
+      toast.error("Paid amount cannot exceed total");
+      return;
+    }
+
+    const profit = (parsed.data.salePrice - product.costPrice) * parsed.data.quantity;
 
     onSubmit({
-      customer,
-      contact,
-      address,
-      quantity: parseFloat(quantity),
-      salePrice: parseFloat(salePrice),
+      customer: parsed.data.customer,
+      contact: parsed.data.contact || "",
+      address: parsed.data.address || "",
+      quantity: parsed.data.quantity,
+      salePrice: parsed.data.salePrice,
       total,
       paid: paidAmount,
       remaining,
@@ -62,7 +82,7 @@ export const AddSaleModal = ({ open, onClose, onSubmit, product }: AddSaleModalP
       dueDate: dueDate || undefined,
       status: remaining === 0 ? "Paid" : remaining === total ? "Pending" : "Partial",
       profit,
-      notes,
+      notes: parsed.data.notes || "",
     });
 
     resetForm();

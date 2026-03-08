@@ -38,7 +38,7 @@ export function InviteTeamMemberModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const generateInviteToken = () => {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    return crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
   };
 
   const handleInvite = async (e: React.FormEvent) => {

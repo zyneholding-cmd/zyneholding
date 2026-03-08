@@ -28,6 +28,11 @@ serve(async (req) => {
     
     const isValid = password === correctPassword;
     
+    if (!isValid) {
+      // Delay failed attempts to mitigate brute-force attacks
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    
     return new Response(
       JSON.stringify({ valid: isValid }),
       {

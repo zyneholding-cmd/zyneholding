@@ -13,9 +13,14 @@ import {
 
 export const MainLayout = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Auth guard: redirect unauthenticated users
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   useEffect(() => {
     if (user) {

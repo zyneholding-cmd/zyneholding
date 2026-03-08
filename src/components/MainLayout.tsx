@@ -525,7 +525,23 @@ export const MainLayout = () => {
           </header>
 
           <main className="flex-1 overflow-auto bg-background">
-            <Outlet />
+            {(() => {
+              const permKey = getPermissionForPath(currentPath);
+              if (permKey && !hasPermission(permKey)) {
+                return (
+                  <div className="flex flex-col items-center justify-center h-[60vh] text-center p-6">
+                    <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+                      <AlertTriangle className="h-8 w-8 text-destructive" />
+                    </div>
+                    <h2 className="text-xl font-semibold mb-2">Access Restricted</h2>
+                    <p className="text-muted-foreground max-w-md">
+                      You don't have permission to access this section. Contact your team owner or admin to update your permissions.
+                    </p>
+                  </div>
+                );
+              }
+              return <Outlet />;
+            })()}
           </main>
         </div>
       </div>

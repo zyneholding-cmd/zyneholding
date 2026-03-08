@@ -318,24 +318,12 @@ export const MainLayout = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Mail */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-md">
-                    <Mail className="h-5 w-5" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-72 p-0" align="end">
-                  <div className="p-4 border-b border-border">
-                    <h3 className="font-semibold text-sm">Messages</h3>
-                  </div>
-                  <div className="p-6 text-center text-muted-foreground text-sm">
-                    <Inbox className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-                    <p>No messages yet</p>
-                    <p className="text-xs mt-1">Messages will appear here</p>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              {/* Mail / Inbox */}
+              <Button variant="ghost" size="icon" className="rounded-md" asChild>
+                <Link to="/inbox">
+                  <Mail className="h-5 w-5" />
+                </Link>
+              </Button>
 
               {/* Profile */}
               <DropdownMenu>

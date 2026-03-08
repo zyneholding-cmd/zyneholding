@@ -25,20 +25,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const ensureProfileExists = async (currentUser: User) => {
+    await supabase.from('profiles').upsert(
+      {
+        id: currentUser.id,
+        email: currentUser.email ?? '',
+        full_name: currentUser.user_metadata?.full_name ?? currentUser.email ?? null,
+      },
+      { onConflict: 'id' }
+    );
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+
+        if (session?.user) {
+          await ensureProfileExists(session.user);
+        }
+
         setLoading(false);
       }
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+
+      if (session?.user) {
+        await ensureProfileExists(session.user);
+      }
+
       setLoading(false);
     });
 

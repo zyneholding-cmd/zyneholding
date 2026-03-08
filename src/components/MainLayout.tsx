@@ -357,6 +357,18 @@ export const MainLayout = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link to="/my-businesses" className="flex items-center cursor-pointer">
+                      <Briefcase className="mr-2 h-4 w-4" />
+                      My Businesses
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/inbox" className="flex items-center cursor-pointer">
+                      <Mail className="mr-2 h-4 w-4" />
+                      Inbox
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/calendar" className="flex items-center cursor-pointer">
                       <Calendar className="mr-2 h-4 w-4" />
                       Calendar

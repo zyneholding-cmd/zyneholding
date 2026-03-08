@@ -3,8 +3,19 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
+
+const ALLOWED_SALE_FIELDS = ['customer', 'contact', 'address', 'quantity', 'sale_price', 'total', 'paid', 'remaining', 'profit', 'payment_type', 'method', 'status', 'date', 'due_date', 'notes'];
+const ALLOWED_PRODUCT_FIELDS = ['name', 'cost_price', 'color', 'image', 'category', 'stock', 'min_stock', 'barcode'];
+
+function whitelist(obj: Record<string, any>, allowed: string[]): Record<string, any> {
+  const result: Record<string, any> = {};
+  for (const key of allowed) {
+    if (key in obj) result[key] = obj[key];
+  }
+  return result;
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,25 +23,50 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate the user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+    // User-scoped client that respects RLS
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
     const { message, action, conversationHistory = [] } = await req.json();
     
     if (!message && !action) {
       throw new Error('Message or action is required');
     }
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Handle update actions
+    // Handle update actions with whitelisted fields and ownership check
     if (action) {
       if (action.type === 'update_sale') {
         const { saleId, updates } = action;
+        const safeUpdates = whitelist(updates, ALLOWED_SALE_FIELDS);
         const { error } = await supabase
           .from('sales')
-          .update(updates)
-          .eq('id', saleId);
+          .update(safeUpdates)
+          .eq('id', saleId)
+          .eq('user_id', userId);
 
         if (error) throw error;
 
@@ -42,10 +78,12 @@ serve(async (req) => {
       
       if (action.type === 'update_product') {
         const { productId, updates } = action;
+        const safeUpdates = whitelist(updates, ALLOWED_PRODUCT_FIELDS);
         const { error } = await supabase
           .from('products')
-          .update(updates)
-          .eq('id', productId);
+          .update(safeUpdates)
+          .eq('id', productId)
+          .eq('user_id', userId);
 
         if (error) throw error;
 
@@ -61,26 +99,19 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Fetch all products and sales data
+    // Fetch user's own products and sales (RLS enforced via user-scoped client)
     const { data: products, error: productsError } = await supabase
       .from('products')
       .select('*');
 
-    if (productsError) {
-      console.error('Error fetching products:', productsError);
-      throw productsError;
-    }
+    if (productsError) throw productsError;
 
     const { data: sales, error: salesError } = await supabase
       .from('sales')
       .select('*');
 
-    if (salesError) {
-      console.error('Error fetching sales:', salesError);
-      throw salesError;
-    }
+    if (salesError) throw salesError;
 
-    // Prepare context data for AI
     const contextData = {
       products: products || [],
       sales: sales || [],
@@ -128,7 +159,6 @@ CONVERSATION MEMORY:
 
 Always use EXACT data provided. Format numbers with appropriate currency. Be professional, insightful, and remember: you have full memory of this conversation.`;
 
-    // Build conversation with history
     const conversationMessages = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory.map((msg: any) => ({
@@ -138,7 +168,6 @@ Always use EXACT data provided. Format numbers with appropriate currency. Be pro
       { role: 'user', content: message },
     ];
 
-    // Call Lovable AI
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -174,14 +203,12 @@ Always use EXACT data provided. Format numbers with appropriate currency. Be pro
 
     return new Response(
       JSON.stringify({ reply }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error in chat-assistant:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: 'An error occurred processing your request' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

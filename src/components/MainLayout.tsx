@@ -269,7 +269,10 @@ export const MainLayout = () => {
             ) : (
               <>
                 {/* Business tools sidebar */}
-                {userTools.slice(0, 8).map((tool) => {
+                {userTools.slice(0, 8).filter((tool) => {
+                  const permKey = getPermissionForPath(tool.path);
+                  return !permKey || hasPermission(permKey);
+                }).map((tool) => {
                   const Icon = tool.icon;
                   const isActive = currentPath === tool.path;
                   return (

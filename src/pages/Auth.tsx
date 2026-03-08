@@ -214,7 +214,7 @@ export default function Auth() {
                   {checks.map((c, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs">
                       {c.pass ? (
-                        <Check className="h-3.5 w-3.5 text-green-500" />
+                        <Check className="h-3.5 w-3.5 text-success" />
                       ) : (
                         <X className="h-3.5 w-3.5 text-muted-foreground" />
                       )}

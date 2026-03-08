@@ -232,28 +232,31 @@ export default function MyBusinesses() {
         // Check if they already have a role
         const { data: existingRole } = await supabase
           .from("user_roles")
-          .select("id")
+          .select("id, role")
           .eq("user_id", profileData.id)
           .maybeSingle();
 
         if (!existingRole) {
           // Add member role
-          await supabase.from("user_roles").insert({
+          const { error: roleError } = await supabase.from("user_roles").insert({
             user_id: profileData.id,
             role: "member",
             created_by: user?.id,
           } as any);
+          if (roleError) console.error("Role insert error:", roleError);
         }
 
-        // Update their profile with job title
-        await supabase.from("profiles").update({
-          job_title: app.position || "Team Member",
-        } as any).eq("id", profileData.id);
+        // Update the application status to approved
+        await supabase.from("business_applications").update({ status: "approved" } as any).eq("id", app.id);
 
         toast.success(`${app.full_name} has been added to your team!`);
+      } else {
+        toast.info(`${app.full_name} hasn't signed up yet — they'll join the team once they create an account.`);
       }
     } catch (err) {
       console.error("Failed to add to team:", err);
+      toast.error("Failed to add to team");
+    }
     }
   };
 

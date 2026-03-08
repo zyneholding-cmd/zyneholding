@@ -123,7 +123,7 @@ export default function Team() {
         .from("user_roles")
         .select("*")
         .eq("user_id", memberId)
-        .single();
+        .maybeSingle();
 
       if (existingRole) {
         const { error } = await supabase

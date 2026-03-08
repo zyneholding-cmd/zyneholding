@@ -205,8 +205,55 @@ export default function MyBusinesses() {
         updated_by: user?.id,
       } as any);
     }
+
+    // When hired, automatically add the applicant to the team
+    if (stage === "hired") {
+      const app = applications.find(a => a.id === appId);
+      if (app) {
+        await addHiredApplicantToTeam(app);
+      }
+    }
+
     fetchPipeline();
     toast.success(`Moved to ${stage}`);
+  };
+
+  const addHiredApplicantToTeam = async (app: BusinessApplication) => {
+    try {
+      // Find the user by email in profiles
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", app.email)
+        .maybeSingle();
+
+      if (profileData) {
+        // Check if they already have a role
+        const { data: existingRole } = await supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", profileData.id)
+          .maybeSingle();
+
+        if (!existingRole) {
+          // Add member role
+          await supabase.from("user_roles").insert({
+            user_id: profileData.id,
+            role: "member",
+            created_by: user?.id,
+          } as any);
+        }
+
+        // Update their profile with job title
+        await supabase.from("profiles").update({
+          job_title: app.position || "Team Member",
+        } as any).eq("id", profileData.id);
+
+        toast.success(`${app.full_name} has been added to your team!`);
+      }
+    } catch (err) {
+      console.error("Failed to add to team:", err);
+    }
   };
 
   const toggleListingStatus = async (id: string, currentStatus: string) => {

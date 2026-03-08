@@ -10,6 +10,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import JoinUs from "./pages/JoinUs";
 import JoinBusiness from "./pages/JoinBusiness";
+import Onboarding from "./pages/Onboarding";
 import Index from "./pages/Index";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProductManagement from "./pages/ProductManagement";

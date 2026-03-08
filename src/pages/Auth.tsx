@@ -34,7 +34,16 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      // Check if onboarding is completed
+      const checkOnboarding = async () => {
+        const { data } = await supabase.from("profiles").select("onboarding_completed").eq("id", user.id).maybeSingle();
+        if (data && !(data as any).onboarding_completed) {
+          navigate("/onboarding");
+        } else {
+          navigate("/dashboard");
+        }
+      };
+      checkOnboarding();
     }
   }, [user, navigate]);
 

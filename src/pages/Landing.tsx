@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { BarChart3, Shield, Users, Zap, TrendingUp, Lock, Globe } from "lucide-react";
+import { BarChart3, Shield, Users, Zap, TrendingUp, Lock, Globe, Briefcase } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 

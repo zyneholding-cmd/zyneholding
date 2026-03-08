@@ -42,6 +42,7 @@ export default function Team() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [permissionsMember, setPermissionsMember] = useState<{ id: string; name: string; role: string } | null>(null);
 
   useEffect(() => {
     if (user) {

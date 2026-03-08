@@ -342,4 +342,9 @@ All colors MUST be HSL.
   .merge-icon {
     animation: merge-pulse 3s ease-in-out infinite;
   }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }

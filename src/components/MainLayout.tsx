@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Moon, Sun, Search, Bell, Mail, User, Grid3x3, Settings,
   LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox, Briefcase,
-  Building2, UserCheck,
+  Building2, UserCheck, Home, Send, FolderOpen, Star,
 } from "lucide-react";
 
 export const MainLayout = () => {

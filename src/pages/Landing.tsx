@@ -34,6 +34,7 @@ export default function Landing() {
             <a href="#features" className="text-foreground/70 hover:text-primary transition-colors font-medium">Features</a>
             <a href="#about" className="text-foreground/70 hover:text-primary transition-colors font-medium">About</a>
             <a href="#pricing" className="text-foreground/70 hover:text-primary transition-colors font-medium">Pricing</a>
+            <a href="#join" className="text-foreground/70 hover:text-primary transition-colors font-medium">Join Us</a>
             <a href="#contact" className="text-foreground/70 hover:text-primary transition-colors font-medium">Contact</a>
           </div>
 

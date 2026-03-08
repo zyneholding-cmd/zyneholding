@@ -369,6 +369,12 @@ export default function Team() {
                         >
                           Remove
                         </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setPermissionsMember({ id: member.id, name: member.full_name || member.email, role: member.role })}
+                        >
+                          <Settings className="h-4 w-4 mr-2" />
+                          Permissions & Title
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}

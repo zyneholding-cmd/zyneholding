@@ -19,10 +19,11 @@ import {
   Send, Loader2, CheckCircle, X, Clock, FileText,
   TrendingUp, Building2, Eye, XCircle, AlertCircle,
   Image, Link, Plus, Folder, BadgeCheck, Crown,
-  Calendar, ArrowRight,
+  Calendar, ArrowRight, ArrowLeft, User, Mail, Phone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface BusinessListing {
   id: string;
@@ -124,6 +125,52 @@ const stageLabels: Record<string, string> = {
   rejected: "Not Selected",
 };
 
+// Job department → titles mapping
+const JOB_DEPARTMENTS: Record<string, string[]> = {
+  "Engineering": ["Backend Developer", "Frontend Developer", "Full Stack Developer", "Mobile Developer", "DevOps Engineer", "QA Engineer", "Data Engineer", "ML Engineer", "Security Engineer", "Cloud Architect"],
+  "Design": ["UI Designer", "UX Designer", "Graphic Designer", "Product Designer", "Motion Designer", "Brand Designer", "3D Designer"],
+  "Marketing": ["Digital Marketer", "Content Writer", "SEO Specialist", "Social Media Manager", "Growth Hacker", "Email Marketer", "Brand Strategist", "PPC Specialist"],
+  "Sales": ["Sales Representative", "Account Executive", "Business Development", "Sales Manager", "Customer Success Manager"],
+  "Management": ["Project Manager", "Product Manager", "Operations Manager", "Office Manager", "Team Lead"],
+  "Finance": ["Accountant", "Financial Analyst", "Bookkeeper", "Payroll Specialist", "Auditor"],
+  "HR": ["HR Manager", "Recruiter", "Training Coordinator", "HR Generalist", "Talent Acquisition"],
+  "Customer Support": ["Customer Support Agent", "Technical Support", "Help Desk Analyst", "Community Manager"],
+  "Data": ["Data Analyst", "Data Scientist", "Business Analyst", "Database Administrator", "BI Analyst"],
+  "Creative": ["Video Editor", "Photographer", "Copywriter", "Content Creator", "Animator"],
+};
+
+// Title → skills mapping
+const TITLE_SKILLS: Record<string, string[]> = {
+  "Backend Developer": ["Java", "Python", "Node.js", "Go", "C#", "Ruby", "PostgreSQL", "MongoDB", "Redis", "Docker", "Kubernetes", "AWS", "REST API", "GraphQL", "Microservices"],
+  "Frontend Developer": ["React", "Vue.js", "Angular", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Next.js", "Svelte", "Redux", "Webpack"],
+  "Full Stack Developer": ["React", "Node.js", "TypeScript", "Python", "PostgreSQL", "MongoDB", "Docker", "AWS", "GraphQL", "REST API", "Git", "CI/CD"],
+  "Mobile Developer": ["React Native", "Flutter", "Swift", "Kotlin", "iOS", "Android", "Firebase", "REST API", "TypeScript"],
+  "DevOps Engineer": ["Docker", "Kubernetes", "AWS", "Azure", "GCP", "Terraform", "Jenkins", "CI/CD", "Linux", "Ansible", "Prometheus", "Grafana"],
+  "QA Engineer": ["Selenium", "Cypress", "Jest", "Playwright", "Manual Testing", "API Testing", "Performance Testing", "CI/CD"],
+  "Data Engineer": ["Python", "SQL", "Spark", "Airflow", "Kafka", "AWS", "Snowflake", "dbt", "ETL", "Data Modeling"],
+  "ML Engineer": ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "NLP", "Computer Vision", "Deep Learning", "MLOps", "Docker"],
+  "UI Designer": ["Figma", "Sketch", "Adobe XD", "Prototyping", "Design Systems", "Typography", "Color Theory", "Responsive Design"],
+  "UX Designer": ["User Research", "Wireframing", "Prototyping", "Figma", "A/B Testing", "Information Architecture", "Usability Testing"],
+  "Graphic Designer": ["Photoshop", "Illustrator", "InDesign", "Figma", "Typography", "Branding", "Print Design", "Digital Design"],
+  "Product Designer": ["Figma", "User Research", "Prototyping", "Design Systems", "Interaction Design", "Visual Design", "Usability Testing"],
+  "Digital Marketer": ["Google Ads", "Facebook Ads", "SEO", "SEM", "Analytics", "Content Marketing", "Email Marketing", "Social Media"],
+  "Content Writer": ["Copywriting", "SEO Writing", "Blog Writing", "Technical Writing", "Research", "Editing", "CMS", "WordPress"],
+  "SEO Specialist": ["On-page SEO", "Off-page SEO", "Google Analytics", "Search Console", "Keyword Research", "Link Building", "Technical SEO"],
+  "Social Media Manager": ["Content Strategy", "Community Management", "Analytics", "Paid Social", "Instagram", "TikTok", "LinkedIn", "Canva"],
+  "Project Manager": ["Agile", "Scrum", "Jira", "Risk Management", "Stakeholder Management", "Budget Planning", "Communication", "Leadership"],
+  "Product Manager": ["Product Strategy", "Roadmapping", "User Stories", "Agile", "A/B Testing", "Analytics", "Market Research", "Prioritization"],
+  "Data Analyst": ["SQL", "Python", "Excel", "Tableau", "Power BI", "Statistics", "Data Visualization", "R", "Google Analytics"],
+  "Data Scientist": ["Python", "R", "Machine Learning", "Statistics", "SQL", "TensorFlow", "Deep Learning", "NLP", "Pandas", "NumPy"],
+  "Sales Representative": ["CRM", "Cold Calling", "Negotiation", "Lead Generation", "Pipeline Management", "Presentation", "Closing"],
+  "Customer Support Agent": ["Communication", "Problem Solving", "CRM", "Ticketing Systems", "Patience", "Product Knowledge", "Live Chat"],
+  "Accountant": ["QuickBooks", "Excel", "Financial Reporting", "Tax Preparation", "Bookkeeping", "GAAP", "Payroll", "Accounts Payable"],
+  "HR Manager": ["Recruitment", "Employee Relations", "Performance Management", "HRIS", "Compliance", "Training", "Conflict Resolution"],
+  "Video Editor": ["Premiere Pro", "After Effects", "DaVinci Resolve", "Final Cut Pro", "Motion Graphics", "Color Grading", "Sound Design"],
+};
+
+// Fallback for titles not in the map
+const DEFAULT_SKILLS = ["Communication", "Problem Solving", "Teamwork", "Time Management", "Adaptability", "Leadership", "Critical Thinking", "Organization"];
+
 export default function EmployeeDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("discover");
@@ -148,11 +195,15 @@ export default function EmployeeDashboard() {
   });
   const [tagInput, setTagInput] = useState("");
 
+  // Multi-step apply form
+  const [applyStep, setApplyStep] = useState(0);
   const [applyForm, setApplyForm] = useState({
-    full_name: "", email: "", phone: "", position: "", cover_letter: "",
-    experience_level: "intermediate", skills: [] as string[],
+    full_name: "", email: "", phone: "", address: "",
+    department: "", position: "", position_id: "",
+    experience_level: "intermediate",
+    skills: [] as string[],
+    cover_letter: "",
   });
-  const [skillInput, setSkillInput] = useState("");
 
   useEffect(() => {
     if (user) fetchAll();
@@ -212,7 +263,9 @@ export default function EmployeeDashboard() {
     if (data) setPipelineEntries(data as any);
   };
 
+  // Filter out own businesses
   const filtered = listings.filter(l => {
+    if (l.owner_id === user?.id) return false; // Can't apply to own business
     const matchesSearch = !searchQuery ||
       l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       l.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -221,13 +274,6 @@ export default function EmployeeDashboard() {
   });
 
   const alreadyApplied = (bizId: string) => myApplications.some(a => a.business_id === bizId);
-
-  const addSkill = () => {
-    if (skillInput.trim() && !applyForm.skills.includes(skillInput.trim())) {
-      setApplyForm(p => ({ ...p, skills: [...p.skills, skillInput.trim()] }));
-      setSkillInput("");
-    }
-  };
 
   const handleApply = async () => {
     if (!selectedBusiness || !applyForm.full_name || !applyForm.email) {
@@ -240,12 +286,15 @@ export default function EmployeeDashboard() {
     const { error } = await supabase.from("business_applications").insert({
       business_id: selectedBusiness.id,
       full_name: applyForm.full_name, email: applyForm.email,
-      phone: applyForm.phone || null, position: applyForm.position || null,
+      phone: applyForm.phone || null,
+      position: applyForm.position || null,
+      position_id: applyForm.position_id || null,
       cover_letter: applyForm.cover_letter || null,
       skills: applyForm.skills, experience_level: applyForm.experience_level,
+      applicant_user_id: user?.id || null,
     } as any);
     if (error) toast.error("Failed to submit");
-    else { toast.success("Application submitted!"); setSelectedBusiness(null); setApplyMode(false); fetchMyApplications(); }
+    else { toast.success("Application submitted!"); setSelectedBusiness(null); setApplyMode(false); setApplyStep(0); fetchMyApplications(); }
     setSubmitting(false);
   };
 
@@ -282,6 +331,24 @@ export default function EmployeeDashboard() {
   const approvedCount = myApplications.filter(a => a.status === "approved").length;
   const pendingOffers = offers.filter(o => o.status === "pending").length;
 
+  // Available skills based on selected title
+  const availableSkills = TITLE_SKILLS[applyForm.position] || DEFAULT_SKILLS;
+
+  const openApplyFlow = () => {
+    setApplyMode(true);
+    setApplyStep(0);
+    setApplyForm(prev => ({
+      ...prev,
+      full_name: profile?.full_name || "",
+      email: profile?.email || "",
+      phone: "", address: "",
+      department: "", position: "", position_id: "",
+      experience_level: "intermediate",
+      skills: [],
+      cover_letter: "",
+    }));
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -310,7 +377,7 @@ export default function EmployeeDashboard() {
           )}
           <Card className="flex items-center gap-2 px-3 py-2 border-border/50">
             <Briefcase className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">{listings.length} Open</span>
+            <span className="text-sm font-medium">{filtered.length} Open</span>
           </Card>
         </div>
       </div>
@@ -439,7 +506,6 @@ export default function EmployeeDashboard() {
                     <Badge variant="outline" className="capitalize">{stageLabels[stage] || stage}</Badge>
                   </div>
 
-                  {/* Pipeline progress */}
                   <div className="mt-3 flex items-center gap-1">
                     {["applied", "screening", "interview", "offer", "hired"].map((s, i) => (
                       <div key={s} className="flex items-center gap-1 flex-1">
@@ -618,8 +684,8 @@ export default function EmployeeDashboard() {
         </TabsContent>
       </Tabs>
 
-      {/* Business Detail / Apply Dialog */}
-      <Dialog open={!!selectedBusiness} onOpenChange={o => { if (!o) { setSelectedBusiness(null); setApplyMode(false); } }}>
+      {/* Business Detail / Multi-step Apply Dialog */}
+      <Dialog open={!!selectedBusiness} onOpenChange={o => { if (!o) { setSelectedBusiness(null); setApplyMode(false); setApplyStep(0); } }}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           {selectedBusiness && !applyMode && (
             <>
@@ -638,7 +704,6 @@ export default function EmployeeDashboard() {
                   {selectedBusiness.salary_range && <span className="font-medium text-primary">{selectedBusiness.salary_range}</span>}
                 </div>
 
-                {/* Open Positions */}
                 {positions.filter(p => p.business_id === selectedBusiness.id).length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-2">Open Positions</h4>
@@ -685,71 +750,227 @@ export default function EmployeeDashboard() {
                     <p className="font-medium text-green-600">You've already applied</p>
                   </div>
                 ) : (
-                  <Button className="w-full gap-2" size="lg" onClick={() => setApplyMode(true)}><Send className="h-4 w-4" /> Apply Now</Button>
+                  <Button className="w-full gap-2" size="lg" onClick={openApplyFlow}><Send className="h-4 w-4" /> Apply Now</Button>
                 )}
               </div>
             </>
           )}
 
+          {/* Multi-Step Application Form */}
           {selectedBusiness && applyMode && (
             <>
-              <DialogHeader><DialogTitle>Apply to {selectedBusiness.title}</DialogTitle></DialogHeader>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Full Name *</Label><Input value={applyForm.full_name} onChange={e => setApplyForm(p => ({ ...p, full_name: e.target.value }))} /></div>
-                  <div><Label>Email *</Label><Input type="email" value={applyForm.email} onChange={e => setApplyForm(p => ({ ...p, email: e.target.value }))} /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Phone</Label><Input value={applyForm.phone} onChange={e => setApplyForm(p => ({ ...p, phone: e.target.value }))} /></div>
-                  <div><Label>Position</Label>
-                    {positions.filter(p => p.business_id === selectedBusiness.id).length > 0 ? (
-                      <Select value={applyForm.position} onValueChange={v => setApplyForm(p => ({ ...p, position: v }))}>
-                        <SelectTrigger><SelectValue placeholder="Select position" /></SelectTrigger>
-                        <SelectContent>
-                          {positions.filter(p => p.business_id === selectedBusiness.id).map(pos => (
-                            <SelectItem key={pos.id} value={pos.title}>{pos.title}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <Input placeholder="e.g. Developer" value={applyForm.position} onChange={e => setApplyForm(p => ({ ...p, position: e.target.value }))} />
-                    )}
+              <DialogHeader>
+                <DialogTitle>Apply to {selectedBusiness.title}</DialogTitle>
+              </DialogHeader>
+
+              {/* Step indicators */}
+              <div className="flex items-center gap-2 mb-4">
+                {["Personal Info", "Address & Contact", "Department", "Title & Skills", "Review & Submit"].map((label, i) => (
+                  <div key={i} className="flex items-center gap-1 flex-1">
+                    <div className={cn(
+                      "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
+                      applyStep >= i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    )}>{i + 1}</div>
+                    <div className={cn("h-1 flex-1 rounded-full", i < 4 ? (applyStep > i ? "bg-primary" : "bg-muted") : "hidden")} />
                   </div>
-                </div>
-                <div>
-                  <Label>Experience</Label>
-                  <Select value={applyForm.experience_level} onValueChange={v => setApplyForm(p => ({ ...p, experience_level: v }))}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="expert">Expert</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Skills</Label>
-                  <div className="flex gap-2">
-                    <Input value={skillInput} onChange={e => setSkillInput(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addSkill())} placeholder="Add skill" />
-                    <Button variant="outline" onClick={addSkill}>Add</Button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                {["Personal Info", "Address & Contact", "Department", "Title & Skills", "Review & Submit"][applyStep]}
+              </p>
+
+              {/* Step 0: Name & Email */}
+              {applyStep === 0 && (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label className="flex items-center gap-1"><User className="h-3 w-3" /> Full Name *</Label>
+                      <Input value={applyForm.full_name} onChange={e => setApplyForm(p => ({ ...p, full_name: e.target.value }))} />
+                    </div>
+                    <div>
+                      <Label className="flex items-center gap-1"><Mail className="h-3 w-3" /> Email *</Label>
+                      <Input type="email" value={applyForm.email} onChange={e => setApplyForm(p => ({ ...p, email: e.target.value }))} />
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {applyForm.skills.map((s, i) => (
-                      <Badge key={i} variant="secondary" className="gap-1">{s}
-                        <X className="h-3 w-3 cursor-pointer" onClick={() => setApplyForm(p => ({ ...p, skills: p.skills.filter((_, j) => j !== i) }))} />
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div><Label>Cover Letter</Label><Textarea rows={4} value={applyForm.cover_letter} onChange={e => setApplyForm(p => ({ ...p, cover_letter: e.target.value }))} placeholder="Why you're a great fit..." /></div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setApplyMode(false)} className="flex-1">Back</Button>
-                  <Button onClick={handleApply} disabled={submitting} className="flex-1 gap-2">
-                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Submit
+                  <Button className="w-full gap-1" disabled={!applyForm.full_name || !applyForm.email} onClick={() => setApplyStep(1)}>
+                    Next <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
+              )}
+
+              {/* Step 1: Address & Phone */}
+              {applyStep === 1 && (
+                <div className="space-y-3">
+                  <div>
+                    <Label className="flex items-center gap-1"><Phone className="h-3 w-3" /> Phone</Label>
+                    <Input value={applyForm.phone} onChange={e => setApplyForm(p => ({ ...p, phone: e.target.value }))} placeholder="+1 234 567 8900" />
+                  </div>
+                  <div>
+                    <Label className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Address</Label>
+                    <Input value={applyForm.address} onChange={e => setApplyForm(p => ({ ...p, address: e.target.value }))} placeholder="City, Country" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => setApplyStep(0)}><ArrowLeft className="h-4 w-4" /> Back</Button>
+                    <Button className="flex-1 gap-1" onClick={() => setApplyStep(2)}>Next <ArrowRight className="h-4 w-4" /></Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Department */}
+              {applyStep === 2 && (
+                <div className="space-y-3">
+                  <Label>What department are you applying for?</Label>
+                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                    {Object.keys(JOB_DEPARTMENTS).map(dept => (
+                      <Card
+                        key={dept}
+                        className={cn(
+                          "p-3 cursor-pointer transition-all text-sm font-medium text-center",
+                          applyForm.department === dept ? "ring-2 ring-primary border-primary bg-primary/5" : "hover:border-primary/30"
+                        )}
+                        onClick={() => setApplyForm(p => ({ ...p, department: dept, position: "", skills: [] }))}
+                      >
+                        {dept}
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* If the business has positions, also show them */}
+                  {positions.filter(p => p.business_id === selectedBusiness.id).length > 0 && (
+                    <div className="pt-2 border-t">
+                      <Label className="text-xs text-muted-foreground">Or apply to a specific position:</Label>
+                      <div className="grid grid-cols-1 gap-1 mt-1">
+                        {positions.filter(p => p.business_id === selectedBusiness.id).map(pos => (
+                          <Card
+                            key={pos.id}
+                            className={cn(
+                              "p-2 cursor-pointer transition-all text-sm flex items-center justify-between",
+                              applyForm.position_id === pos.id ? "ring-2 ring-primary border-primary" : "hover:border-primary/30"
+                            )}
+                            onClick={() => setApplyForm(p => ({ ...p, position_id: pos.id, position: pos.title, department: "", skills: [] }))}
+                          >
+                            <span className="font-medium">{pos.title}</span>
+                            <Badge variant="outline" className="text-[10px] capitalize">{pos.employment_type}</Badge>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => setApplyStep(1)}><ArrowLeft className="h-4 w-4" /> Back</Button>
+                    <Button className="flex-1 gap-1" disabled={!applyForm.department && !applyForm.position_id} onClick={() => setApplyStep(3)}>
+                      Next <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Title & Skills */}
+              {applyStep === 3 && (
+                <div className="space-y-3">
+                  {/* Show titles based on department if no specific position chosen */}
+                  {applyForm.department && !applyForm.position_id && (
+                    <div>
+                      <Label>Choose your title</Label>
+                      <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto mt-1">
+                        {(JOB_DEPARTMENTS[applyForm.department] || []).map(title => (
+                          <Card
+                            key={title}
+                            className={cn(
+                              "p-2 cursor-pointer transition-all text-sm text-center",
+                              applyForm.position === title ? "ring-2 ring-primary border-primary bg-primary/5" : "hover:border-primary/30"
+                            )}
+                            onClick={() => setApplyForm(p => ({ ...p, position: title, skills: [] }))}
+                          >
+                            {title}
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {applyForm.position && (
+                    <div>
+                      <Label>Select your skills for <span className="text-primary font-semibold">{applyForm.position}</span></Label>
+                      <div className="flex flex-wrap gap-2 mt-2 max-h-40 overflow-y-auto">
+                        {availableSkills.map(skill => (
+                          <Badge
+                            key={skill}
+                            variant={applyForm.skills.includes(skill) ? "default" : "outline"}
+                            className={cn(
+                              "cursor-pointer transition-all",
+                              applyForm.skills.includes(skill) ? "" : "hover:bg-primary/10"
+                            )}
+                            onClick={() => setApplyForm(p => ({
+                              ...p,
+                              skills: p.skills.includes(skill) ? p.skills.filter(s => s !== skill) : [...p.skills, skill]
+                            }))}
+                          >
+                            {skill}
+                            {applyForm.skills.includes(skill) && <CheckCircle className="h-3 w-3 ml-1" />}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <Label>Experience Level</Label>
+                    <Select value={applyForm.experience_level} onValueChange={v => setApplyForm(p => ({ ...p, experience_level: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="beginner">Beginner (0-1 years)</SelectItem>
+                        <SelectItem value="intermediate">Intermediate (2-4 years)</SelectItem>
+                        <SelectItem value="expert">Expert (5+ years)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => setApplyStep(2)}><ArrowLeft className="h-4 w-4" /> Back</Button>
+                    <Button className="flex-1 gap-1" disabled={!applyForm.position} onClick={() => setApplyStep(4)}>
+                      Next <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Review & Submit */}
+              {applyStep === 4 && (
+                <div className="space-y-3">
+                  <div className="p-4 rounded-lg bg-muted/50 border space-y-2 text-sm">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div><span className="text-muted-foreground">Name:</span> <span className="font-medium">{applyForm.full_name}</span></div>
+                      <div><span className="text-muted-foreground">Email:</span> <span className="font-medium">{applyForm.email}</span></div>
+                      {applyForm.phone && <div><span className="text-muted-foreground">Phone:</span> <span className="font-medium">{applyForm.phone}</span></div>}
+                      {applyForm.address && <div><span className="text-muted-foreground">Address:</span> <span className="font-medium">{applyForm.address}</span></div>}
+                    </div>
+                    <div className="pt-2 border-t">
+                      <span className="text-muted-foreground">Position:</span> <span className="font-semibold text-primary">{applyForm.position}</span>
+                      {applyForm.department && <span className="text-muted-foreground ml-2">({applyForm.department})</span>}
+                    </div>
+                    <div><span className="text-muted-foreground">Experience:</span> <span className="capitalize font-medium">{applyForm.experience_level}</span></div>
+                    {applyForm.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 pt-1">
+                        {applyForm.skills.map((s, i) => <Badge key={i} variant="secondary" className="text-xs">{s}</Badge>)}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label>Cover Letter (optional)</Label>
+                    <Textarea rows={4} value={applyForm.cover_letter} onChange={e => setApplyForm(p => ({ ...p, cover_letter: e.target.value }))} placeholder="Why you're a great fit..." />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => setApplyStep(3)}><ArrowLeft className="h-4 w-4" /> Back</Button>
+                    <Button onClick={handleApply} disabled={submitting} className="flex-1 gap-2">
+                      {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Submit Application
+                    </Button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </DialogContent>

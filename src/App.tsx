@@ -10,6 +10,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import JoinUs from "./pages/JoinUs";
 import JoinBusiness from "./pages/JoinBusiness";
+import Onboarding from "./pages/Onboarding";
 import Index from "./pages/Index";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProductManagement from "./pages/ProductManagement";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/join" element={<JoinUs />} />
               <Route path="/join-business" element={<JoinBusiness />} />
+              <Route path="/onboarding" element={<Onboarding />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>

@@ -37,6 +37,7 @@ export type Database = {
       }
       business_applications: {
         Row: {
+          applicant_user_id: string | null
           business_id: string
           cover_letter: string | null
           created_at: string | null
@@ -46,12 +47,14 @@ export type Database = {
           id: string
           phone: string | null
           position: string | null
+          position_id: string | null
           resume_url: string | null
           skills: string[] | null
           status: string
           updated_at: string | null
         }
         Insert: {
+          applicant_user_id?: string | null
           business_id: string
           cover_letter?: string | null
           created_at?: string | null
@@ -61,12 +64,14 @@ export type Database = {
           id?: string
           phone?: string | null
           position?: string | null
+          position_id?: string | null
           resume_url?: string | null
           skills?: string[] | null
           status?: string
           updated_at?: string | null
         }
         Update: {
+          applicant_user_id?: string | null
           business_id?: string
           cover_letter?: string | null
           created_at?: string | null
@@ -76,6 +81,7 @@ export type Database = {
           id?: string
           phone?: string | null
           position?: string | null
+          position_id?: string | null
           resume_url?: string | null
           skills?: string[] | null
           status?: string
@@ -89,17 +95,28 @@ export type Database = {
             referencedRelation: "business_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_applications_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "business_positions"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_listings: {
         Row: {
+          application_count: number | null
           benefits: string[] | null
           category: string | null
           cover_image_url: string | null
           created_at: string | null
           culture: string | null
           description: string | null
+          featured_until: string | null
           id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
           location: string | null
           logo_url: string | null
           owner_id: string
@@ -111,16 +128,21 @@ export type Database = {
           team_size: string | null
           title: string
           updated_at: string | null
+          views_count: number | null
           website: string | null
         }
         Insert: {
+          application_count?: number | null
           benefits?: string[] | null
           category?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           culture?: string | null
           description?: string | null
+          featured_until?: string | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
           location?: string | null
           logo_url?: string | null
           owner_id: string
@@ -132,16 +154,21 @@ export type Database = {
           team_size?: string | null
           title: string
           updated_at?: string | null
+          views_count?: number | null
           website?: string | null
         }
         Update: {
+          application_count?: number | null
           benefits?: string[] | null
           category?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           culture?: string | null
           description?: string | null
+          featured_until?: string | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
           location?: string | null
           logo_url?: string | null
           owner_id?: string
@@ -153,6 +180,7 @@ export type Database = {
           team_size?: string | null
           title?: string
           updated_at?: string | null
+          views_count?: number | null
           website?: string | null
         }
         Relationships: [
@@ -161,6 +189,109 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_positions: {
+        Row: {
+          applications_count: number | null
+          business_id: string
+          created_at: string | null
+          description: string | null
+          employment_type: string | null
+          experience_level: string | null
+          id: string
+          is_open: boolean | null
+          requirements: string | null
+          salary_range: string | null
+          skills_required: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          applications_count?: number | null
+          business_id: string
+          created_at?: string | null
+          description?: string | null
+          employment_type?: string | null
+          experience_level?: string | null
+          id?: string
+          is_open?: boolean | null
+          requirements?: string | null
+          salary_range?: string | null
+          skills_required?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          applications_count?: number | null
+          business_id?: string
+          created_at?: string | null
+          description?: string | null
+          employment_type?: string | null
+          experience_level?: string | null
+          id?: string
+          is_open?: boolean | null
+          requirements?: string | null
+          salary_range?: string | null
+          skills_required?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_positions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_reviews: {
+        Row: {
+          business_id: string
+          content: string | null
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          rating: number
+          reviewer_id: string
+          reviewer_type: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          rating: number
+          reviewer_id: string
+          reviewer_type?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          rating?: number
+          reviewer_id?: string
+          reviewer_type?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_listings"
             referencedColumns: ["id"]
           },
         ]
@@ -366,6 +497,63 @@ export type Database = {
             columns: ["uploaded_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hiring_pipeline: {
+        Row: {
+          application_id: string
+          business_id: string
+          created_at: string | null
+          id: string
+          interview_date: string | null
+          interview_link: string | null
+          interview_type: string | null
+          notes: string | null
+          stage: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          business_id: string
+          created_at?: string | null
+          id?: string
+          interview_date?: string | null
+          interview_link?: string | null
+          interview_type?: string | null
+          notes?: string | null
+          stage?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          business_id?: string
+          created_at?: string | null
+          id?: string
+          interview_date?: string | null
+          interview_link?: string | null
+          interview_type?: string | null
+          notes?: string | null
+          stage?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_pipeline_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "business_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hiring_pipeline_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_listings"
             referencedColumns: ["id"]
           },
         ]
@@ -604,6 +792,72 @@ export type Database = {
         }
         Relationships: []
       }
+      job_offers: {
+        Row: {
+          applicant_email: string
+          application_id: string
+          benefits: string[] | null
+          business_id: string
+          created_at: string | null
+          id: string
+          position_title: string
+          responded_at: string | null
+          salary: string | null
+          sent_at: string | null
+          start_date: string | null
+          status: string
+          terms: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          applicant_email: string
+          application_id: string
+          benefits?: string[] | null
+          business_id: string
+          created_at?: string | null
+          id?: string
+          position_title: string
+          responded_at?: string | null
+          salary?: string | null
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string
+          terms?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          applicant_email?: string
+          application_id?: string
+          benefits?: string[] | null
+          business_id?: string
+          created_at?: string | null
+          id?: string
+          position_title?: string
+          responded_at?: string | null
+          salary?: string | null
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string
+          terms?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_offers_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "business_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_permissions: {
         Row: {
           allowed: boolean | null
@@ -645,6 +899,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      portfolio_items: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          project_url: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          project_url?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          project_url?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       products: {
         Row: {

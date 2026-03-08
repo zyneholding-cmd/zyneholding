@@ -993,7 +993,9 @@ export type Database = {
           full_name: string | null
           id: string
           job_title: string | null
+          onboarding_completed: boolean | null
           updated_at: string | null
+          user_type: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -1003,7 +1005,9 @@ export type Database = {
           full_name?: string | null
           id: string
           job_title?: string | null
+          onboarding_completed?: boolean | null
           updated_at?: string | null
+          user_type?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -1013,7 +1017,9 @@ export type Database = {
           full_name?: string | null
           id?: string
           job_title?: string | null
+          onboarding_completed?: boolean | null
           updated_at?: string | null
+          user_type?: string | null
         }
         Relationships: []
       }

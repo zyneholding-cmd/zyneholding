@@ -21,6 +21,7 @@ import Team from "./pages/Team";
 import Workflow from "./pages/Workflow";
 import Invoices from "./pages/Invoices";
 import NotFound from "./pages/NotFound";
+import Applications from "./pages/Applications";
 
 const queryClient = new QueryClient();
 

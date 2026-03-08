@@ -6,6 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PAYMENT_METHODS, Product } from "@/types/sales";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const saleSchema = z.object({
+  customer: z.string().trim().min(1, "Customer name is required").max(100, "Customer name too long"),
+  contact: z.string().max(50, "Contact too long").optional().or(z.literal("")),
+  address: z.string().max(300, "Address too long").optional().or(z.literal("")),
+  quantity: z.number().positive("Quantity must be positive").int("Quantity must be a whole number"),
+  salePrice: z.number().positive("Sale price must be positive").max(999_999_999, "Price too large"),
+  notes: z.string().max(1000, "Notes too long").optional().or(z.literal("")),
+});
 
 interface AddSaleModalProps {
   open: boolean;

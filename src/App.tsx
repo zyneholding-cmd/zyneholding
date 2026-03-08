@@ -44,6 +44,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/join" element={<JoinUs />} />
               <Route path="/join-business" element={<JoinBusiness />} />
+              <Route path="/onboarding" element={<Onboarding />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>

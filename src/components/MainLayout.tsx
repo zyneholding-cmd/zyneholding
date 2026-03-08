@@ -299,26 +299,34 @@ export const MainLayout = () => {
               <h1 className="text-xl font-semibold text-foreground">Zyne Holding</h1>
 
               {/* Business / Employee Mode Switch */}
-              <div className="hidden md:flex items-center bg-muted rounded-full p-0.5">
+              <div className="hidden md:flex items-center bg-muted/80 rounded-lg p-0.5 border border-border/50">
                 <button
-                  onClick={() => { setMode('business'); localStorage.setItem('zyne_mode', 'business'); }}
+                  onClick={() => {
+                    setMode('business');
+                    localStorage.setItem('zyne_mode', 'business');
+                    navigate('/dashboard');
+                  }}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                    "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
                     mode === 'business'
                       ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                 >
                   <Building2 className="h-3.5 w-3.5" />
                   Business
                 </button>
                 <button
-                  onClick={() => { setMode('employee'); localStorage.setItem('zyne_mode', 'employee'); navigate('/join-business'); }}
+                  onClick={() => {
+                    setMode('employee');
+                    localStorage.setItem('zyne_mode', 'employee');
+                    navigate('/employee');
+                  }}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                    "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
                     mode === 'employee'
                       ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                 >
                   <UserCheck className="h-3.5 w-3.5" />

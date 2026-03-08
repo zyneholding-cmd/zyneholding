@@ -242,8 +242,36 @@ export const MainLayout = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-4">
               <h1 className="text-xl font-semibold text-foreground">Zyne Holding</h1>
+
+              {/* Business / Employee Mode Switch */}
+              <div className="hidden md:flex items-center bg-muted rounded-full p-0.5">
+                <button
+                  onClick={() => { setMode('business'); localStorage.setItem('zyne_mode', 'business'); }}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                    mode === 'business'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Building2 className="h-3.5 w-3.5" />
+                  Business
+                </button>
+                <button
+                  onClick={() => { setMode('employee'); localStorage.setItem('zyne_mode', 'employee'); navigate('/join-business'); }}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                    mode === 'employee'
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <UserCheck className="h-3.5 w-3.5" />
+                  Employee
+                </button>
+              </div>
               <nav className="hidden lg:flex items-center gap-1">
                 {topNavItems.map((item, idx) => (
                   <Link

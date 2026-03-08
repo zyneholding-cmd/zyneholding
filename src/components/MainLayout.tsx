@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AllToolsModal } from "@/components/AllToolsModal";
 import { getImplementedTools } from "@/data/businessTools";
 import { cn } from "@/lib/utils";
+import { usePermissions, getPermissionForPath } from "@/hooks/usePermissions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +33,7 @@ export const MainLayout = () => {
   const { user, loading, signOut } = useAuth();
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<string | null>(null);
+  const { hasPermission, isOwnerOrAdmin, role: permRole } = usePermissions();
   const [profile, setProfile] = useState<{ full_name: string | null; email: string; avatar_url: string | null } | null>(null);
   const [mode, setMode] = useState<'business' | 'employee'>(() => {
     return (localStorage.getItem('zyne_mode') as 'business' | 'employee') || 'business';
@@ -267,7 +269,10 @@ export const MainLayout = () => {
             ) : (
               <>
                 {/* Business tools sidebar */}
-                {userTools.slice(0, 8).map((tool) => {
+                {userTools.slice(0, 8).filter((tool) => {
+                  const permKey = getPermissionForPath(tool.path);
+                  return !permKey || hasPermission(permKey);
+                }).map((tool) => {
                   const Icon = tool.icon;
                   const isActive = currentPath === tool.path;
                   return (
@@ -520,7 +525,23 @@ export const MainLayout = () => {
           </header>
 
           <main className="flex-1 overflow-auto bg-background">
-            <Outlet />
+            {(() => {
+              const permKey = getPermissionForPath(currentPath);
+              if (permKey && !hasPermission(permKey)) {
+                return (
+                  <div className="flex flex-col items-center justify-center h-[60vh] text-center p-6">
+                    <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+                      <AlertTriangle className="h-8 w-8 text-destructive" />
+                    </div>
+                    <h2 className="text-xl font-semibold mb-2">Access Restricted</h2>
+                    <p className="text-muted-foreground max-w-md">
+                      You don't have permission to access this section. Contact your team owner or admin to update your permissions.
+                    </p>
+                  </div>
+                );
+              }
+              return <Outlet />;
+            })()}
           </main>
         </div>
       </div>

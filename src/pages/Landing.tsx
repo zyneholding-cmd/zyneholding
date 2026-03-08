@@ -177,6 +177,47 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Join Our Team Section */}
+      <section id="join" className="py-20 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-secondary p-12 md:p-16 text-center">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+            <div className="relative z-10 space-y-6">
+              <div className="flex justify-center gap-2">
+                {[Briefcase, Users, Zap].map((Icon, i) => (
+                  <div key={i} className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center">
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                ))}
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-white">
+                Join Our Team
+              </h2>
+              <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+                Are you talented, motivated, and ready to make an impact? We're looking for developers, designers, marketers, and business professionals to join Zyne Holding.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  onClick={() => navigate('/join')}
+                  className="text-lg px-10 py-6 hover-scale bg-white text-primary hover:bg-white/90"
+                >
+                  Apply Now
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-10 py-6 hover-scale border-white/30 text-white hover:bg-white/10"
+                >
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="py-20 px-4">
         <div className="container mx-auto max-w-2xl text-center">

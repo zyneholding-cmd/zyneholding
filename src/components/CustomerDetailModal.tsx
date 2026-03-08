@@ -6,6 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sale, PAYMENT_METHODS } from "@/types/sales";
 import { Line } from "react-chartjs-2";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const customerUpdateSchema = z.object({
+  customer: z.string().trim().min(1, "Customer name required").max(100, "Name too long"),
+  contact: z.string().max(50, "Contact too long").optional().or(z.literal("")),
+  address: z.string().max(300, "Address too long").optional().or(z.literal("")),
+  quantity: z.number().positive("Quantity must be positive"),
+  salePrice: z.number().positive("Sale price must be positive").max(999_999_999),
+  paid: z.number().nonnegative("Paid amount cannot be negative"),
+});
 
 interface CustomerDetailModalProps {
   open: boolean;
@@ -28,13 +39,39 @@ export const CustomerDetailModal = ({ open, onClose, sale, onUpdate }: CustomerD
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const total = (formData.salePrice || 0) * (formData.quantity || 1);
-    const paid = formData.paid || 0;
-    const remaining = total - paid;
+    const parsed = customerUpdateSchema.safeParse({
+      customer: formData.customer || "",
+      contact: formData.contact || "",
+      address: formData.address || "",
+      quantity: formData.quantity || 1,
+      salePrice: formData.salePrice || 0,
+      paid: formData.paid || 0,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Invalid input";
+      toast.error(firstError);
+      return;
+    }
+
+    const total = parsed.data.salePrice * parsed.data.quantity;
+    
+    if (parsed.data.paid > total) {
+      toast.error("Paid amount cannot exceed total");
+      return;
+    }
+
+    const remaining = total - parsed.data.paid;
     const status = remaining === 0 ? "Paid" : remaining === total ? "Pending" : "Partial";
 
     onUpdate({
       ...formData,
+      customer: parsed.data.customer,
+      contact: parsed.data.contact,
+      address: parsed.data.address,
+      quantity: parsed.data.quantity,
+      salePrice: parsed.data.salePrice,
+      paid: parsed.data.paid,
       total,
       remaining,
       status,

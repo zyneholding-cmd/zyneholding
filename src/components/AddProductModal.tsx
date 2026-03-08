@@ -10,6 +10,16 @@ import { toast } from "sonner";
 import { Upload, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { playSound } from "@/utils/sounds";
+import { z } from "zod";
+
+const productSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be under 100 characters"),
+  costPrice: z.number().positive("Cost price must be positive").max(999_999_999, "Price too large"),
+  image: z.string().url("Invalid image URL").optional().or(z.literal("")),
+  stock: z.number().nonnegative("Stock cannot be negative"),
+  minStock: z.number().nonnegative("Min stock cannot be negative").optional(),
+  barcode: z.string().max(50, "Barcode too long").optional(),
+});
 
 interface AddProductModalProps {
   open: boolean;
@@ -77,22 +87,36 @@ export const AddProductModal = ({ open, onClose, onSubmit }: AddProductModalProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !costPrice) return;
     if (!user) {
       toast.error("You must be logged in to add products");
       return;
     }
 
-    playSound('success');
-    onSubmit({
+    const parsed = productSchema.safeParse({
       name,
       costPrice: parseFloat(costPrice),
-      color: selectedColor,
-      image: image || imagePreview || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+      image: image || imagePreview || "",
       stock: stock ? parseFloat(stock) : 0,
-      category,
       minStock: minStock ? parseFloat(minStock) : 5,
       barcode: barcode || undefined,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Invalid input";
+      toast.error(firstError);
+      return;
+    }
+
+    playSound('success');
+    onSubmit({
+      name: parsed.data.name,
+      costPrice: parsed.data.costPrice,
+      color: selectedColor,
+      image: parsed.data.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+      stock: parsed.data.stock,
+      category,
+      minStock: parsed.data.minStock ?? 5,
+      barcode: parsed.data.barcode,
     });
 
     setName("");

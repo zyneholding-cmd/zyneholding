@@ -6,6 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PAYMENT_METHODS, Product } from "@/types/sales";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const saleSchema = z.object({
+  customer: z.string().trim().min(1, "Customer name is required").max(100, "Customer name too long"),
+  contact: z.string().max(50, "Contact too long").optional().or(z.literal("")),
+  address: z.string().max(300, "Address too long").optional().or(z.literal("")),
+  quantity: z.number().positive("Quantity must be positive").int("Quantity must be a whole number"),
+  salePrice: z.number().positive("Sale price must be positive").max(999_999_999, "Price too large"),
+  notes: z.string().max(1000, "Notes too long").optional().or(z.literal("")),
+});
 
 interface AddSaleModalProps {
   open: boolean;
@@ -32,16 +43,36 @@ export const AddSaleModal = ({ open, onClose, onSubmit, product }: AddSaleModalP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customer || !salePrice || !product) return;
+    if (!product) return;
 
-    const profit = (parseFloat(salePrice) - product.costPrice) * parseFloat(quantity);
+    const parsed = saleSchema.safeParse({
+      customer,
+      contact: contact || undefined,
+      address: address || undefined,
+      quantity: parseInt(quantity),
+      salePrice: parseFloat(salePrice),
+      notes: notes || undefined,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Invalid input";
+      toast.error(firstError);
+      return;
+    }
+
+    if (paymentType === "partial" && paidAmount > total) {
+      toast.error("Paid amount cannot exceed total");
+      return;
+    }
+
+    const profit = (parsed.data.salePrice - product.costPrice) * parsed.data.quantity;
 
     onSubmit({
-      customer,
-      contact,
-      address,
-      quantity: parseFloat(quantity),
-      salePrice: parseFloat(salePrice),
+      customer: parsed.data.customer,
+      contact: parsed.data.contact || "",
+      address: parsed.data.address || "",
+      quantity: parsed.data.quantity,
+      salePrice: parsed.data.salePrice,
       total,
       paid: paidAmount,
       remaining,
@@ -51,7 +82,7 @@ export const AddSaleModal = ({ open, onClose, onSubmit, product }: AddSaleModalP
       dueDate: dueDate || undefined,
       status: remaining === 0 ? "Paid" : remaining === total ? "Pending" : "Partial",
       profit,
-      notes,
+      notes: parsed.data.notes || "",
     });
 
     resetForm();

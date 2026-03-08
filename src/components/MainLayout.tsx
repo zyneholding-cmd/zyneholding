@@ -1,4 +1,4 @@
-import { Link, useLocation, Outlet } from "react-router-dom";
+import { Link, useLocation, Outlet, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,7 +13,7 @@ import {
 
 export const MainLayout = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<string | null>(null);
 
@@ -62,6 +62,11 @@ export const MainLayout = () => {
       setUserTools(selectedTools);
     }
   };
+
+  // Auth guard: redirect unauthenticated users (after all hooks)
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const topNavItems = [
     { name: "Relationship", path: "/customers" },

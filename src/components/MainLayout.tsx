@@ -33,6 +33,10 @@ export const MainLayout = () => {
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<string | null>(null);
   const [profile, setProfile] = useState<{ full_name: string | null; email: string; avatar_url: string | null } | null>(null);
+  const [mode, setMode] = useState<'business' | 'employee'>(() => {
+    return (localStorage.getItem('zyne_mode') as 'business' | 'employee') || 'business';
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {

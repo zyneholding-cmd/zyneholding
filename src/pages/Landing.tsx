@@ -34,7 +34,7 @@ export default function Landing() {
             <a href="#features" className="text-foreground/70 hover:text-primary transition-colors font-medium">Features</a>
             <a href="#about" className="text-foreground/70 hover:text-primary transition-colors font-medium">About</a>
             <a href="#pricing" className="text-foreground/70 hover:text-primary transition-colors font-medium">Pricing</a>
-            <a href="#join" className="text-foreground/70 hover:text-primary transition-colors font-medium">Join Us</a>
+            <a href="#join" className="text-foreground/70 hover:text-primary transition-colors font-medium">Join Zyne's Business</a>
             <a href="#contact" className="text-foreground/70 hover:text-primary transition-colors font-medium">Contact</a>
           </div>
 
@@ -178,7 +178,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Join Our Team Section */}
+      {/* Join Zyne's Business Section */}
       <section id="join" className="py-20 px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-secondary p-12 md:p-16 text-center">
@@ -192,26 +192,27 @@ export default function Landing() {
                 ))}
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-white">
-                Join Our Team
+                Join Zyne's Business
               </h2>
               <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-                Are you talented, motivated, and ready to make an impact? We're looking for developers, designers, marketers, and business professionals to join Zyne Holding.
+                Browse businesses on our platform, find opportunities that match your skills, and apply to join teams that are building the future.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button
                   size="lg"
                   variant="secondary"
-                  onClick={() => navigate('/join')}
+                  onClick={() => navigate('/join-business')}
                   className="text-lg px-10 py-6 hover-scale bg-white text-primary hover:bg-white/90"
                 >
-                  Apply Now
+                  Browse Businesses
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
+                  onClick={() => navigate('/join')}
                   className="text-lg px-10 py-6 hover-scale border-white/30 text-white hover:bg-white/10"
                 >
-                  Learn More
+                  Apply to Zyne
                 </Button>
               </div>
             </div>

@@ -9,6 +9,7 @@ import { MainLayout } from "@/components/MainLayout";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import JoinUs from "./pages/JoinUs";
+import JoinBusiness from "./pages/JoinBusiness";
 import Index from "./pages/Index";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProductManagement from "./pages/ProductManagement";
@@ -22,6 +23,8 @@ import Workflow from "./pages/Workflow";
 import Invoices from "./pages/Invoices";
 import NotFound from "./pages/NotFound";
 import Applications from "./pages/Applications";
+import MyBusinesses from "./pages/MyBusinesses";
+import Inbox from "./pages/Inbox";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,7 @@ const App = () => (
               <Route path="/landing" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/join" element={<JoinUs />} />
+              <Route path="/join-business" element={<JoinBusiness />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>
@@ -53,6 +57,8 @@ const App = () => (
                 <Route path="/workflow" element={<Workflow />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/applications" element={<Applications />} />
+                <Route path="/my-businesses" element={<MyBusinesses />} />
+                <Route path="/inbox" element={<Inbox />} />
               </Route>
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

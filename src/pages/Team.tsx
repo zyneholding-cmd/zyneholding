@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserPlus, MoreVertical, Shield, Crown, User as UserIcon, Mail, Calendar } from "lucide-react";
+import { UserPlus, MoreVertical, Shield, Crown, User as UserIcon, Mail, Calendar, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { InviteTeamMemberModal } from "@/components/InviteTeamMemberModal";
+import { MemberPermissionsModal } from "@/components/MemberPermissionsModal";
 import { format } from "date-fns";
 
 interface TeamMember {
@@ -41,6 +42,7 @@ export default function Team() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [permissionsMember, setPermissionsMember] = useState<{ id: string; name: string; role: string } | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -367,6 +369,12 @@ export default function Team() {
                         >
                           Remove
                         </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setPermissionsMember({ id: member.id, name: member.full_name || member.email, role: member.role })}
+                        >
+                          <Settings className="h-4 w-4 mr-2" />
+                          Permissions & Title
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
@@ -385,6 +393,16 @@ export default function Team() {
           setIsInviteModalOpen(false);
         }}
       />
+
+      {permissionsMember && (
+        <MemberPermissionsModal
+          open={!!permissionsMember}
+          onOpenChange={(o) => { if (!o) setPermissionsMember(null); }}
+          memberId={permissionsMember.id}
+          memberName={permissionsMember.name}
+          currentRole={permissionsMember.role}
+        />
+      )}
     </div>
   );
 }

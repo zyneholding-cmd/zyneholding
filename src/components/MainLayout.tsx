@@ -1,4 +1,4 @@
-import { Link, useLocation, Outlet, Navigate } from "react-router-dom";
+import { Link, useLocation, Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,7 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   Moon, Sun, Search, Bell, Mail, User, Grid3x3, Settings,
-  LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox,
+  LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox, Briefcase,
 } from "lucide-react";
 
 export const MainLayout = () => {
@@ -318,24 +318,12 @@ export const MainLayout = () => {
                 </PopoverContent>
               </Popover>
 
-              {/* Mail */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-md">
-                    <Mail className="h-5 w-5" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-72 p-0" align="end">
-                  <div className="p-4 border-b border-border">
-                    <h3 className="font-semibold text-sm">Messages</h3>
-                  </div>
-                  <div className="p-6 text-center text-muted-foreground text-sm">
-                    <Inbox className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-                    <p>No messages yet</p>
-                    <p className="text-xs mt-1">Messages will appear here</p>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              {/* Mail / Inbox */}
+              <Button variant="ghost" size="icon" className="rounded-md" asChild>
+                <Link to="/inbox">
+                  <Mail className="h-5 w-5" />
+                </Link>
+              </Button>
 
               {/* Profile */}
               <DropdownMenu>
@@ -366,6 +354,18 @@ export const MainLayout = () => {
                     <Link to="/team" className="flex items-center cursor-pointer">
                       <UserCircle className="mr-2 h-4 w-4" />
                       Team & Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/my-businesses" className="flex items-center cursor-pointer">
+                      <Briefcase className="mr-2 h-4 w-4" />
+                      My Businesses
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/inbox" className="flex items-center cursor-pointer">
+                      <Mail className="mr-2 h-4 w-4" />
+                      Inbox
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>

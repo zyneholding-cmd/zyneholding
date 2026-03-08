@@ -10,6 +10,16 @@ import { toast } from "sonner";
 import { Upload, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { playSound } from "@/utils/sounds";
+import { z } from "zod";
+
+const productSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be under 100 characters"),
+  costPrice: z.number().positive("Cost price must be positive").max(999_999_999, "Price too large"),
+  image: z.string().url("Invalid image URL").optional().or(z.literal("")),
+  stock: z.number().nonnegative("Stock cannot be negative"),
+  minStock: z.number().nonnegative("Min stock cannot be negative").optional(),
+  barcode: z.string().max(50, "Barcode too long").optional(),
+});
 
 interface AddProductModalProps {
   open: boolean;

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { InviteTeamMemberModal } from "@/components/InviteTeamMemberModal";
+import { MemberPermissionsModal } from "@/components/MemberPermissionsModal";
 import { format } from "date-fns";
 
 interface TeamMember {

@@ -393,6 +393,16 @@ export default function Team() {
           setIsInviteModalOpen(false);
         }}
       />
+
+      {permissionsMember && (
+        <MemberPermissionsModal
+          open={!!permissionsMember}
+          onOpenChange={(o) => { if (!o) setPermissionsMember(null); }}
+          memberId={permissionsMember.id}
+          memberName={permissionsMember.name}
+          currentRole={permissionsMember.role}
+        />
+      )}
     </div>
   );
 }

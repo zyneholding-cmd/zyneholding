@@ -112,19 +112,29 @@ export default function Tasks() {
   const handleDrop = async (newStatus: string) => {
     if (!draggedTask) return;
 
+    // Optimistically update local state immediately
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === draggedTask ? { ...task, status: newStatus as Task["status"] } : task
+      )
+    );
+    setDraggedTask(null);
+
     try {
       const { error } = await supabase
         .from("tasks")
         .update({ status: newStatus })
         .eq("id", draggedTask);
 
-      if (error) throw error;
+      if (error) {
+        // Revert on error
+        fetchTasks();
+        throw error;
+      }
       toast.success("Task status updated");
     } catch (error) {
       console.error("Error updating task:", error);
       toast.error("Failed to update task");
-    } finally {
-      setDraggedTask(null);
     }
   };
 

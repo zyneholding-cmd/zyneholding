@@ -369,6 +369,69 @@ export type Database = {
           },
         ]
       }
+      job_applications: {
+        Row: {
+          admin_notes: string | null
+          availability: string | null
+          bio: string | null
+          categories: string[] | null
+          created_at: string | null
+          email: string
+          experience_level: string
+          full_name: string
+          hourly_rate: number | null
+          id: string
+          phone: string | null
+          portfolio_link: string | null
+          profile_photo_url: string | null
+          purpose: string
+          resume_url: string | null
+          skills: string[] | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          availability?: string | null
+          bio?: string | null
+          categories?: string[] | null
+          created_at?: string | null
+          email: string
+          experience_level?: string
+          full_name: string
+          hourly_rate?: number | null
+          id?: string
+          phone?: string | null
+          portfolio_link?: string | null
+          profile_photo_url?: string | null
+          purpose: string
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          availability?: string | null
+          bio?: string | null
+          categories?: string[] | null
+          created_at?: string | null
+          email?: string
+          experience_level?: string
+          full_name?: string
+          hourly_rate?: number | null
+          id?: string
+          phone?: string | null
+          portfolio_link?: string | null
+          profile_photo_url?: string | null
+          purpose?: string
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           barcode: string | null

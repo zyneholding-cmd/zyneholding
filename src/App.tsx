@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MainLayout } from "@/components/MainLayout";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
+import JoinUs from "./pages/JoinUs";
 import Index from "./pages/Index";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProductManagement from "./pages/ProductManagement";
@@ -20,6 +21,7 @@ import Team from "./pages/Team";
 import Workflow from "./pages/Workflow";
 import Invoices from "./pages/Invoices";
 import NotFound from "./pages/NotFound";
+import Applications from "./pages/Applications";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +37,7 @@ const App = () => (
               <Route path="/" element={<Navigate to="/landing" replace />} />
               <Route path="/landing" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/join" element={<JoinUs />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>
@@ -49,6 +52,7 @@ const App = () => (
                 <Route path="/team" element={<Team />} />
                 <Route path="/workflow" element={<Workflow />} />
                 <Route path="/invoices" element={<Invoices />} />
+                <Route path="/applications" element={<Applications />} />
               </Route>
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -57,6 +57,8 @@ const App = () => (
                 <Route path="/workflow" element={<Workflow />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/applications" element={<Applications />} />
+                <Route path="/my-businesses" element={<MyBusinesses />} />
+                <Route path="/inbox" element={<Inbox />} />
               </Route>
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

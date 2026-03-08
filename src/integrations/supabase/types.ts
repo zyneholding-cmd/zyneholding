@@ -35,6 +35,136 @@ export type Database = {
         }
         Relationships: []
       }
+      business_applications: {
+        Row: {
+          business_id: string
+          cover_letter: string | null
+          created_at: string | null
+          email: string
+          experience_level: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          position: string | null
+          resume_url: string | null
+          skills: string[] | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          cover_letter?: string | null
+          created_at?: string | null
+          email: string
+          experience_level?: string | null
+          full_name: string
+          id?: string
+          phone?: string | null
+          position?: string | null
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          cover_letter?: string | null
+          created_at?: string | null
+          email?: string
+          experience_level?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          position?: string | null
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_applications_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_listings: {
+        Row: {
+          benefits: string[] | null
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          culture: string | null
+          description: string | null
+          id: string
+          location: string | null
+          logo_url: string | null
+          owner_id: string
+          positions: Json | null
+          rating: number | null
+          requirements: string | null
+          salary_range: string | null
+          status: string
+          team_size: string | null
+          title: string
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          benefits?: string[] | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          culture?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          owner_id: string
+          positions?: Json | null
+          rating?: number | null
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string
+          team_size?: string | null
+          title: string
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          benefits?: string[] | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          culture?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          owner_id?: string
+          positions?: Json | null
+          rating?: number | null
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string
+          team_size?: string | null
+          title?: string
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_listings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendar_events: {
         Row: {
           attendees: string[] | null
@@ -240,6 +370,48 @@ export type Database = {
           },
         ]
       }
+      inbox_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inbox_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inbox_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -432,6 +604,48 @@ export type Database = {
         }
         Relationships: []
       }
+      member_permissions: {
+        Row: {
+          allowed: boolean | null
+          created_at: string | null
+          granted_by: string | null
+          id: string
+          permission_key: string
+          user_id: string
+        }
+        Insert: {
+          allowed?: boolean | null
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          permission_key: string
+          user_id: string
+        }
+        Update: {
+          allowed?: boolean | null
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          permission_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_permissions_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_permissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           barcode: string | null
@@ -482,6 +696,7 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          job_title: string | null
           updated_at: string | null
         }
         Insert: {
@@ -491,6 +706,7 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          job_title?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -500,6 +716,7 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          job_title?: string | null
           updated_at?: string | null
         }
         Relationships: []

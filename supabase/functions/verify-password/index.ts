@@ -6,7 +6,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -14,10 +13,19 @@ serve(async (req) => {
   try {
     const { password } = await req.json();
     
-    // Get the correct password from environment variable
-    const correctPassword = Deno.env.get('SITE_PASSWORD') || 'Pass1122wordzx';
+    const correctPassword = Deno.env.get('SITE_PASSWORD');
     
-    // Verify password
+    if (!correctPassword) {
+      console.error('SITE_PASSWORD secret is not configured');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      );
+    }
+    
     const isValid = password === correctPassword;
     
     return new Response(

@@ -276,6 +276,99 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          amount_paid: number
+          balance_due: number
+          created_at: string | null
+          customer_address: string | null
+          customer_email: string | null
+          customer_id: string | null
+          customer_name: string
+          discount: number
+          due_date: string | null
+          id: string
+          invoice_number: string
+          issue_date: string
+          items: Json
+          notes: string | null
+          sale_id: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
+          terms: string | null
+          total: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number
+          balance_due?: number
+          created_at?: string | null
+          customer_address?: string | null
+          customer_email?: string | null
+          customer_id?: string | null
+          customer_name: string
+          discount?: number
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          issue_date?: string
+          items?: Json
+          notes?: string | null
+          sale_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          terms?: string | null
+          total?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          balance_due?: number
+          created_at?: string | null
+          customer_address?: string | null
+          customer_email?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          discount?: number
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          issue_date?: string
+          items?: Json
+          notes?: string | null
+          sale_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          terms?: string | null
+          total?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           barcode: string | null

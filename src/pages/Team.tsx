@@ -22,6 +22,7 @@ interface TeamMember {
   email: string;
   full_name: string | null;
   business_name: string | null;
+  job_title: string | null;
   created_at: string;
   role: "owner" | "admin" | "member";
 }

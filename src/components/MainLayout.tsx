@@ -63,6 +63,11 @@ export const MainLayout = () => {
     }
   };
 
+  // Auth guard: redirect unauthenticated users (after all hooks)
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
   const topNavItems = [
     { name: "Relationship", path: "/customers" },
     { name: "Opportunities", path: "#" },

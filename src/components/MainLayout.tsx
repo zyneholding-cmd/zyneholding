@@ -23,7 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   Moon, Sun, Search, Bell, Mail, User, Grid3x3, Settings,
-  LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox,
+  LogOut, UserCircle, AlertTriangle, CheckCircle, Calendar, Inbox, Briefcase,
 } from "lucide-react";
 
 export const MainLayout = () => {

@@ -158,7 +158,8 @@ export default function MyBusinesses() {
   };
 
   const fetchListings = async () => {
-    const { data } = await supabase.from("business_listings").select("*").order("created_at", { ascending: false });
+    if (!user) return;
+    const { data } = await supabase.from("business_listings").select("*").eq("owner_id", user.id).order("created_at", { ascending: false });
     if (data) setListings(data as any);
   };
 

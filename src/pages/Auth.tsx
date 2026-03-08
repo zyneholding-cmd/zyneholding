@@ -59,7 +59,7 @@ export default function Auth() {
         });
         if (error) throw error;
         toast.success("Welcome back!");
-        navigate("/dashboard");
+        // Let useEffect handle redirect based on onboarding status
       } else {
         if (!isStrongPassword) {
           toast.error("Please use a stronger password");

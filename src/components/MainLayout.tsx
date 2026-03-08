@@ -144,7 +144,58 @@ export const MainLayout = () => {
       });
     }
 
-    setNotifications(notifs);
+    // Business applications - check if user owns any businesses with new applications
+    const { data: ownedListings } = await supabase
+      .from("business_listings")
+      .select("id, title")
+      .eq("owner_id", user.id);
+
+    if (ownedListings && ownedListings.length > 0) {
+      const listingIds = ownedListings.map(l => l.id);
+      const { data: applications } = await supabase
+        .from("business_applications")
+        .select("id, full_name, business_id, position, created_at, status")
+        .in("business_id", listingIds)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (applications) {
+        applications.forEach(app => {
+          const listing = ownedListings.find(l => l.id === app.business_id);
+          notifs.push({
+            id: `app-${app.id}`,
+            title: "New Application",
+            description: `${app.full_name} applied${app.position ? ` for ${app.position}` : ''} at ${listing?.title || 'your business'}`,
+            type: "info",
+            read: false,
+            time: new Date(app.created_at!).toLocaleDateString(),
+          });
+        });
+      }
+    }
+
+    // Inbox unread messages
+    const { data: unreadMessages } = await supabase
+      .from("inbox_messages")
+      .select("id, sender_id, content, created_at")
+      .eq("receiver_id", user.id)
+      .eq("is_read", false)
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (unreadMessages) {
+      for (const msg of unreadMessages) {
+        notifs.push({
+          id: `msg-${msg.id}`,
+          title: "New Message",
+          description: msg.content.length > 60 ? msg.content.slice(0, 60) + '...' : msg.content,
+          type: "info",
+          read: false,
+          time: new Date(msg.created_at!).toLocaleDateString(),
+        });
+      }
+    }
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;

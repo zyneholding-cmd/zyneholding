@@ -41,6 +41,7 @@ const App = () => (
               <Route path="/landing" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/join" element={<JoinUs />} />
+              <Route path="/join-business" element={<JoinBusiness />} />
               
               {/* Protected routes with main layout */}
               <Route element={<MainLayout />}>

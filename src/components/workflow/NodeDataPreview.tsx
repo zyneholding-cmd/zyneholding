@@ -27,7 +27,7 @@ export const NodeDataPreview = ({ data, status }: NodeDataPreviewProps) => {
       )}
       {status === "completed" && data && (
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 mb-1.5">
+          <div className="flex items-center gap-1.5 text-xs text-primary mb-1.5">
             <CheckCircle2 className="h-3 w-3" />
             <span className="font-medium">Completed</span>
           </div>

@@ -6,6 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sale, PAYMENT_METHODS } from "@/types/sales";
 import { Line } from "react-chartjs-2";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const customerUpdateSchema = z.object({
+  customer: z.string().trim().min(1, "Customer name required").max(100, "Name too long"),
+  contact: z.string().max(50, "Contact too long").optional().or(z.literal("")),
+  address: z.string().max(300, "Address too long").optional().or(z.literal("")),
+  quantity: z.number().positive("Quantity must be positive"),
+  salePrice: z.number().positive("Sale price must be positive").max(999_999_999),
+  paid: z.number().nonnegative("Paid amount cannot be negative"),
+});
 
 interface CustomerDetailModalProps {
   open: boolean;

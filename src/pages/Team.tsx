@@ -320,6 +320,11 @@ export default function Team() {
                       )}
                     </p>
                     <p className="text-sm text-muted-foreground">{member.email}</p>
+                    {member.job_title && (
+                      <p className="text-xs text-primary font-medium mt-0.5">
+                        {member.job_title}
+                      </p>
+                    )}
                     {member.business_name && (
                       <p className="text-xs text-muted-foreground">
                         {member.business_name}

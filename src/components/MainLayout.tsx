@@ -196,6 +196,8 @@ export const MainLayout = () => {
         });
       }
     }
+
+    setNotifications(notifs);
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;

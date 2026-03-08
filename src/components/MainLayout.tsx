@@ -17,11 +17,6 @@ export const MainLayout = () => {
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  // Auth guard: redirect unauthenticated users
-  if (!loading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
   useEffect(() => {
     if (user) {
       fetchUserRole();

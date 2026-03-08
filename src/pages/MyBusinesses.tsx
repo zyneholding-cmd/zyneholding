@@ -257,7 +257,6 @@ export default function MyBusinesses() {
       console.error("Failed to add to team:", err);
       toast.error("Failed to add to team");
     }
-    }
   };
 
   const toggleListingStatus = async (id: string, currentStatus: string) => {

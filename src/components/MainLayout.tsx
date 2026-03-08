@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AllToolsModal } from "@/components/AllToolsModal";
 import { getImplementedTools } from "@/data/businessTools";
 import { cn } from "@/lib/utils";
+import { usePermissions, getPermissionForPath } from "@/hooks/usePermissions";
 import {
   DropdownMenu,
   DropdownMenuContent,

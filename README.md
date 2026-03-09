@@ -1,73 +1,105 @@
-# Welcome to your Lovable project
+ZyneHolding – Business Management Platform
 
-## Project info
+ZyneHolding is an all-in-one business management platform designed to help businesses manage their daily operations from a single dashboard.
 
-**URL**: https://lovable.dev/projects/654fd486-8304-4423-8b81-01dac67ae95c
+The platform provides tools for managing sales, clients, products, invoices, and team communication. It also allows businesses to publish their company profile so others can apply to join and collaborate.
 
-## How can I edit this code?
+The goal of this project is to create a complete digital workspace for businesses where management, communication, and growth tools are integrated into one system.
 
-There are several ways of editing your application.
+Key Features
+Business Management
 
-**Use Lovable**
+Create and manage businesses
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/654fd486-8304-4423-8b81-01dac67ae95c) and start prompting.
+Publish your business profile
 
-Changes made via Lovable will be committed automatically to this repo.
+Allow other users to apply to join your business
 
-**Use your preferred IDE**
+Sales Management
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Record sales transactions
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Track revenue and business activity
 
-Follow these steps:
+Maintain organized sales history
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Client Management
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Store client information
 
-# Step 3: Install the necessary dependencies.
-npm i
+Manage relationships with customers
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Track client interactions
+
+Product Management
+
+Add and manage products
+
+Track product information and availability
+
+Invoice System
+
+Create and manage invoices
+
+Keep financial records organized
+
+Internal Messaging
+
+Team members can communicate inside the platform
+
+Enables better coordination within the business
+
+Platform Vision
+
+ZyneHolding aims to become a complete digital ecosystem for businesses, providing tools that simplify operations and collaboration.
+
+Future updates will include:
+
+Advanced analytics and reports
+
+Business collaboration tools
+
+Marketplace features
+
+Automation tools
+
+More financial management features
+
+Integration with other services
+
+Technology Stack
+
+This project is built with modern web technologies:
+
+React – Frontend framework
+
+TypeScript – Type-safe JavaScript
+
+Vite – Fast development build tool
+
+Tailwind CSS – Modern styling framework
+
+shadcn-ui – UI component library
+
+Running the Project Locally
+
+Make sure you have Node.js and npm installed.
+
+1. Clone the repository
+git clone https://github.com/zyneholding-cmd/zyneholding.git
+2. Go to the project directory
+cd zyneholding
+3. Install dependencies
+npm install
+4. Start the development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+The application will start locally with live reload.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Future Development
 
-**Use GitHub Codespaces**
+The platform is still under active development. More business tools and features will be added as the system expands.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Author
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/654fd486-8304-4423-8b81-01dac67ae95c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Developed by ZyneHolding

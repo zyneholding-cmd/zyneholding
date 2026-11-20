@@ -52,6 +52,10 @@ export const AddProductModal = ({ open, onClose, onSubmit }: AddProductModalProp
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!user) {
+      toast.error("You must be signed in to upload product images");
+      return;
+    }
 
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
@@ -60,9 +64,12 @@ export const AddProductModal = ({ open, onClose, onSubmit }: AddProductModalProp
 
     setUploadingImage(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const fileExt = file.name.split(".").pop()?.toLowerCase();
+      if (!fileExt || !/^[a-z0-9]{1,8}$/.test(fileExt)) {
+        toast.error("Unsupported image file name");
+        return;
+      }
+      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
       const { error: uploadError, data } = await supabase.storage
         .from("product-images")

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
@@ -53,6 +54,7 @@ const CATEGORIES = [
 export default function JoinUs() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -74,9 +76,15 @@ export default function JoinUs() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
+  const requireSignedInUpload = () => {
+    if (user) return true;
+    toast({ title: "Sign in to upload files", description: "You can still apply without attaching a photo or resume." });
+    return false;
+  };
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && requireSignedInUpload()) {
       setPhotoFile(file);
       setPhotoPreview(URL.createObjectURL(file));
     }
@@ -113,24 +121,30 @@ export default function JoinUs() {
       let profile_photo_url: string | null = null;
       let resume_url: string | null = null;
 
+      if ((photoFile || resumeFile) && !user) {
+        toast({ title: "Sign in to upload files", description: "You can still apply without attaching a photo or resume.", variant: "destructive" });
+        setIsSubmitting(false);
+        return;
+      }
+
       if (photoFile) {
-        const ext = photoFile.name.split(".").pop();
-        const path = `photos/${Date.now()}.${ext}`;
+        const ext = photoFile.name.split(".").pop()?.toLowerCase();
+        if (!user || !ext || !/^[a-z0-9]{1,8}$/.test(ext)) throw new Error("Please sign in and select a valid photo file");
+        const path = `${user.id}/photos/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("application-files").upload(path, photoFile);
-        if (!error) {
-          const { data: urlData } = supabase.storage.from("application-files").getPublicUrl(path);
-          profile_photo_url = urlData.publicUrl;
-        }
+        if (error) throw error;
+        const { data: urlData } = supabase.storage.from("application-files").getPublicUrl(path);
+        profile_photo_url = urlData.publicUrl;
       }
 
       if (resumeFile) {
-        const ext = resumeFile.name.split(".").pop();
-        const path = `resumes/${Date.now()}.${ext}`;
+        const ext = resumeFile.name.split(".").pop()?.toLowerCase();
+        if (!user || !ext || !/^[a-z0-9]{1,8}$/.test(ext)) throw new Error("Please sign in and select a valid resume file");
+        const path = `${user.id}/resumes/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("application-files").upload(path, resumeFile);
-        if (!error) {
-          const { data: urlData } = supabase.storage.from("application-files").getPublicUrl(path);
-          resume_url = urlData.publicUrl;
-        }
+        if (error) throw error;
+        const { data: urlData } = supabase.storage.from("application-files").getPublicUrl(path);
+        resume_url = urlData.publicUrl;
       }
 
       const { error } = await supabase.from("job_applications" as any).insert({
@@ -384,7 +398,7 @@ export default function JoinUs() {
                   </>
                 )}
               </div>
-              {!resumeFile && <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={(e) => setResumeFile(e.target.files?.[0] || null)} />}
+              {!resumeFile && <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file && requireSignedInUpload()) setResumeFile(file); }} />}
             </label>
           </div>
 

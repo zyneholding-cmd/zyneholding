@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +53,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function JoinBusiness() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [listings, setListings] = useState<BusinessListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,6 +73,16 @@ export default function JoinBusiness() {
     skills: [] as string[],
   });
   const [skillInput, setSkillInput] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setApplyForm((current) => ({
+        ...current,
+        full_name: user.user_metadata?.full_name || current.full_name,
+        email: user.email || current.email,
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchListings();
@@ -103,8 +115,17 @@ export default function JoinBusiness() {
   };
 
   const handleApply = async () => {
+    if (!user) {
+      toast.error("Please sign in before applying");
+      navigate("/auth");
+      return;
+    }
     if (!selectedBusiness || !applyForm.full_name || !applyForm.email) {
       toast.error("Please fill in required fields");
+      return;
+    }
+    if (selectedBusiness.owner_id === user.id) {
+      toast.error("You cannot apply to your own business");
       return;
     }
     setSubmitting(true);
@@ -117,6 +138,7 @@ export default function JoinBusiness() {
       cover_letter: applyForm.cover_letter || null,
       skills: applyForm.skills,
       experience_level: applyForm.experience_level,
+      applicant_user_id: user.id,
     } as any);
 
     if (error) {
@@ -262,7 +284,7 @@ export default function JoinBusiness() {
       </section>
 
       {/* Business Detail / Apply Dialog */}
-      <Dialog open={!!selectedBusiness} onOpenChange={(o) => { if (!o) setSelectedBusiness(null); }}>
+      <Dialog open={!!selectedBusiness} onOpenChange={(o) => { if (!o) { setSelectedBusiness(null); setApplyDialogOpen(false); } }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           {selectedBusiness && !applyDialogOpen && !submitted && (
             <>
@@ -339,11 +361,11 @@ export default function JoinBusiness() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Full Name *</Label>
-                    <Input value={applyForm.full_name} onChange={(e) => setApplyForm((p) => ({ ...p, full_name: e.target.value }))} />
+                    <Input value={applyForm.full_name} readOnly={Boolean(user?.user_metadata?.full_name)} onChange={(e) => setApplyForm((p) => ({ ...p, full_name: e.target.value }))} />
                   </div>
                   <div>
                     <Label>Email *</Label>
-                    <Input type="email" value={applyForm.email} onChange={(e) => setApplyForm((p) => ({ ...p, email: e.target.value }))} />
+                    <Input type="email" value={applyForm.email} readOnly={Boolean(user)} onChange={(e) => setApplyForm((p) => ({ ...p, email: e.target.value }))} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">

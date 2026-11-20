@@ -1246,7 +1246,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      application_email_not_listing_owner: {
+        Args: { _applicant_email: string; _business_id: string }
+        Returns: boolean
+      }
       assign_initial_owner: { Args: never; Returns: undefined }
+      can_view_team_profile: {
+        Args: { _target_profile_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

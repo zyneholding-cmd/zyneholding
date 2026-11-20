@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795171835585,
+      "tag": "0000_restrict_selected_data_and_product_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795171888599,
+      "tag": "0001_validate_applications_and_hide_private_records",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795171975736,
+      "tag": "0002_secure_application_uploads_and_candidate_profiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795172041679,
+      "tag": "0003_keep_public_business_applications_safe",
+      "breakpoints": true
+    }
+  ]
+}
